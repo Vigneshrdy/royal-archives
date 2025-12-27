@@ -152,7 +152,14 @@ const BackgroundGradient = ({ isLeft }: { isLeft: boolean }) => (
 );
 
 const ProductVisual = ({ data, isLeft }: { data: SideData; isLeft: boolean }) => (
-  <motion.div layout="position" className="relative group shrink-0">
+  <motion.div 
+    layout
+    className="relative group shrink-0"
+    initial={{ x: isLeft ? -100 : 100, opacity: 0 }}
+    animate={{ x: 0, opacity: 1 }}
+    exit={{ x: isLeft ? 100 : -100, opacity: 0 }}
+    transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+  >
     {/* Animated Rings */}
     <motion.div
       animate={{ rotate: 360 }}
@@ -160,16 +167,19 @@ const ProductVisual = ({ data, isLeft }: { data: SideData; isLeft: boolean }) =>
       className={`absolute inset-[-20%] rounded-full border border-dashed border-border/30 ${data.colors.ring}`}
     />
     <motion.div
-      animate={{ scale: [1, 1.05, 1] }}
-      transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
-      className={`absolute inset-0 rounded-full bg-gradient-to-br ${data.colors.gradient} blur-3xl opacity-20`}
+      animate={{ scale: [1, 1.08, 1], rotate: [0, 5, -5, 0] }}
+      transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
+      className={`absolute inset-0 rounded-full bg-gradient-to-br ${data.colors.gradient} blur-3xl opacity-25`}
     />
 
     {/* Image Container */}
     <div className="relative h-64 w-64 md:h-80 md:w-80 lg:h-96 lg:w-96 rounded-full border border-border/20 shadow-elevated flex items-center justify-center overflow-hidden bg-secondary/30 backdrop-blur-sm">
       <motion.div
-        animate={{ y: [-8, 8, -8] }}
-        transition={{ repeat: Infinity, duration: 6, ease: 'easeInOut' }}
+        animate={{ 
+          y: [-12, 12, -12],
+          rotate: [0, 2, -2, 0]
+        }}
+        transition={{ repeat: Infinity, duration: 5, ease: 'easeInOut' }}
         className="relative z-10 w-full h-full flex items-center justify-center p-8"
       >
         <AnimatePresence mode="wait">
@@ -177,11 +187,26 @@ const ProductVisual = ({ data, isLeft }: { data: SideData; isLeft: boolean }) =>
             key={data.id}
             src={data.image}
             alt={data.title}
-            variants={ANIMATIONS.image(isLeft)}
-            initial="initial"
-            animate="animate"
-            exit="exit"
-            className="w-3/4 h-3/4 object-contain drop-shadow-lg"
+            initial={{ 
+              opacity: 0, 
+              scale: 1.5, 
+              rotate: isLeft ? -30 : 30,
+              x: isLeft ? -80 : 80 
+            }}
+            animate={{ 
+              opacity: 1, 
+              scale: 1, 
+              rotate: 0,
+              x: 0
+            }}
+            exit={{ 
+              opacity: 0, 
+              scale: 0.5, 
+              rotate: isLeft ? 30 : -30,
+              x: isLeft ? 80 : -80 
+            }}
+            transition={{ type: 'spring', stiffness: 200, damping: 25 }}
+            className="w-3/4 h-3/4 object-contain drop-shadow-[0_20px_50px_rgba(0,0,0,0.3)]"
             draggable={false}
           />
         </AnimatePresence>
@@ -190,7 +215,9 @@ const ProductVisual = ({ data, isLeft }: { data: SideData; isLeft: boolean }) =>
 
     {/* Status Label */}
     <motion.div
-      layout="position"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: 0.3 }}
       className="absolute -bottom-6 left-1/2 -translate-x-1/2 whitespace-nowrap"
     >
       <div className="flex items-center gap-2 text-xs uppercase tracking-widest text-muted-foreground bg-card px-4 py-2 rounded-full border border-border shadow-emboss backdrop-blur">
