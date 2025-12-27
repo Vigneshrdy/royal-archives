@@ -1,173 +1,362 @@
+'use client';
+
 import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Scale, BookOpen, Brain, Cpu, ChevronRight, Sparkles } from 'lucide-react';
+import { motion, AnimatePresence, Variants } from 'framer-motion';
+import {
+  Scale,
+  Brain,
+  ChevronRight,
+  Shield,
+  BookOpen,
+  Gavel,
+  FileText,
+  LucideIcon,
+} from 'lucide-react';
 import justiceSymbol from '@/assets/justice-symbol.png';
 import llmBrain from '@/assets/llm-brain.png';
 
-type SideId = 'legal' | 'ai';
+// =========================================
+// 1. CONFIGURATION & DATA TYPES
+// =========================================
 
-const DATA = {
-  legal: {
-    id: 'legal' as SideId,
+export type SideId = 'justice' | 'intelligence';
+
+export interface FeatureMetric {
+  label: string;
+  value: number;
+  icon: LucideIcon;
+}
+
+export interface SideData {
+  id: SideId;
+  label: string;
+  title: string;
+  description: string;
+  image: string;
+  colors: {
+    gradient: string;
+    glow: string;
+    ring: string;
+  };
+  stats: {
+    status: string;
+    percentage: number;
+  };
+  features: FeatureMetric[];
+}
+
+const SIDE_DATA: Record<SideId, SideData> = {
+  justice: {
+    id: 'justice',
     label: 'Legal Foundation',
     title: 'Indian Legal Heritage',
     description: 'Rooted in the Constitution of India, centuries of jurisprudence, and the wisdom of our courts. Nyaya AI understands Indian law at its core.',
     image: justiceSymbol,
-    gradient: 'from-gold/20 to-leather/30',
+    colors: {
+      gradient: 'from-primary to-primary-dark',
+      glow: 'bg-primary',
+      ring: 'border-l-primary/50',
+    },
+    stats: { status: 'Comprehensive', percentage: 98 },
     features: [
-      { label: 'Statutes', value: 95, icon: Scale },
-      { label: 'Judgments', value: 88, icon: BookOpen },
+      { label: 'Statutes', value: 95, icon: BookOpen },
+      { label: 'Judgments', value: 88, icon: Gavel },
     ],
   },
-  ai: {
-    id: 'ai' as SideId,
+  intelligence: {
+    id: 'intelligence',
     label: 'AI Engine',
-    title: 'Advanced Intelligence',
-    description: 'Powered by state-of-the-art language models, trained specifically on Indian legal corpus for accurate, contextual legal assistance.',
+    title: 'Explainable AI',
+    description: 'Advanced language models fine-tuned for legal reasoning. Every answer is grounded, cited, and transparent—no black boxes.',
     image: llmBrain,
-    gradient: 'from-primary/20 to-ink/30',
+    colors: {
+      gradient: 'from-accent to-accent-dark',
+      glow: 'bg-accent',
+      ring: 'border-r-accent/50',
+    },
+    stats: { status: 'Active', percentage: 94 },
     features: [
-      { label: 'Accuracy', value: 97, icon: Brain },
-      { label: 'Speed', value: 92, icon: Cpu },
+      { label: 'Accuracy', value: 96, icon: Shield },
+      { label: 'Citations', value: 92, icon: FileText },
     ],
   },
 };
 
-const imageVariants = (isLeft: boolean) => ({
-  initial: { opacity: 0, scale: 1.3, filter: 'blur(10px)', rotate: isLeft ? -20 : 20 },
-  animate: { opacity: 1, scale: 1, filter: 'blur(0px)', rotate: 0, transition: { type: 'spring' as const, stiffness: 200, damping: 20 } },
-  exit: { opacity: 0, scale: 0.8, filter: 'blur(10px)', transition: { duration: 0.2 } },
-});
+// =========================================
+// 2. ANIMATION VARIANTS
+// =========================================
 
-export default function LegalAIShowcase() {
-  const [active, setActive] = useState<SideId>('legal');
-  const data = DATA[active];
-  const isLegal = active === 'legal';
+const ANIMATIONS = {
+  container: {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: { staggerChildren: 0.1, delayChildren: 0.1 },
+    },
+    exit: {
+      opacity: 0,
+      transition: { duration: 0.2 },
+    },
+  },
+  item: {
+    hidden: { opacity: 0, y: 20, filter: 'blur(10px)' },
+    visible: {
+      opacity: 1,
+      y: 0,
+      filter: 'blur(0px)',
+      transition: { type: 'spring' as const, stiffness: 100, damping: 20 },
+    },
+    exit: { opacity: 0, y: -10, filter: 'blur(5px)' },
+  },
+  image: (isLeft: boolean): Variants => ({
+    initial: {
+      opacity: 0,
+      scale: 1.5,
+      filter: 'blur(15px)',
+      rotate: isLeft ? -30 : 30,
+      x: isLeft ? -80 : 80,
+    },
+    animate: {
+      opacity: 1,
+      scale: 1,
+      filter: 'blur(0px)',
+      rotate: 0,
+      x: 0,
+      transition: { type: 'spring' as const, stiffness: 260, damping: 20 },
+    },
+    exit: {
+      opacity: 0,
+      scale: 0.6,
+      filter: 'blur(20px)',
+      transition: { duration: 0.25 },
+    },
+  }),
+};
+
+// =========================================
+// 3. SUB-COMPONENTS
+// =========================================
+
+const BackgroundGradient = ({ isLeft }: { isLeft: boolean }) => (
+  <div className="absolute inset-0 pointer-events-none overflow-hidden">
+    <motion.div
+      animate={{
+        background: isLeft
+          ? 'radial-gradient(circle at 20% 50%, hsl(var(--primary) / 0.15), transparent 50%)'
+          : 'radial-gradient(circle at 80% 50%, hsl(var(--accent) / 0.15), transparent 50%)',
+      }}
+      transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
+      className="absolute inset-0"
+    />
+  </div>
+);
+
+const ProductVisual = ({ data, isLeft }: { data: SideData; isLeft: boolean }) => (
+  <motion.div 
+    layout
+    className="relative group shrink-0"
+    initial={{ x: isLeft ? -100 : 100, opacity: 0 }}
+    animate={{ x: 0, opacity: 1 }}
+    exit={{ x: isLeft ? 100 : -100, opacity: 0 }}
+    transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+  >
+    {/* Animated Rings */}
+    <motion.div
+      animate={{ rotate: 360 }}
+      transition={{ duration: 30, repeat: Infinity, ease: 'linear' }}
+      className={`absolute inset-[-20%] rounded-full border border-dashed border-border/30 ${data.colors.ring}`}
+    />
+    <motion.div
+      animate={{ scale: [1, 1.08, 1], rotate: [0, 5, -5, 0] }}
+      transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
+      className={`absolute inset-0 rounded-full bg-gradient-to-br ${data.colors.gradient} blur-3xl opacity-25`}
+    />
+
+    {/* Image Container */}
+    <div className="relative h-64 w-64 md:h-80 md:w-80 lg:h-96 lg:w-96 rounded-full border border-border/20 shadow-elevated flex items-center justify-center overflow-hidden bg-secondary/30 backdrop-blur-sm">
+      <motion.div
+        animate={{ 
+          y: [-12, 12, -12],
+          rotate: [0, 2, -2, 0]
+        }}
+        transition={{ repeat: Infinity, duration: 5, ease: 'easeInOut' }}
+        className="relative z-10 w-full h-full flex items-center justify-center p-8"
+      >
+        <AnimatePresence mode="wait">
+          <motion.img
+            key={data.id}
+            src={data.image}
+            alt={data.title}
+            variants={ANIMATIONS.image(isLeft)}
+            initial="initial"
+            animate="animate"
+            exit="exit"
+            className="w-3/4 h-3/4 object-contain drop-shadow-[0_20px_50px_rgba(0,0,0,0.3)]"
+            draggable={false}
+          />
+        </AnimatePresence>
+      </motion.div>
+    </div>
+
+    {/* Status Label */}
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: 0.3 }}
+      className="absolute -bottom-6 left-1/2 -translate-x-1/2 whitespace-nowrap"
+    >
+      <div className="flex items-center gap-2 text-xs uppercase tracking-widest text-muted-foreground bg-card px-4 py-2 rounded-full border border-border shadow-emboss backdrop-blur">
+        <span className={`h-1.5 w-1.5 rounded-full ${data.colors.glow} animate-pulse`} />
+        {data.stats.status}
+      </div>
+    </motion.div>
+  </motion.div>
+);
+
+const ProductDetails = ({ data, isLeft }: { data: SideData; isLeft: boolean }) => {
+  const alignClass = isLeft ? 'items-start text-left' : 'items-end text-right';
+  const barColorClass = isLeft ? 'left-0 bg-primary' : 'right-0 bg-accent';
 
   return (
-    <div className="relative w-full max-w-5xl mx-auto px-4 py-16 overflow-hidden">
-      {/* Background */}
-      <motion.div
-        className={`absolute inset-0 bg-gradient-to-br ${data.gradient} rounded-3xl`}
-        initial={false}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.5 }}
-      />
+    <motion.div
+      variants={ANIMATIONS.container}
+      initial="hidden"
+      animate="visible"
+      exit="exit"
+      className={`flex flex-col ${alignClass} max-w-md`}
+    >
+      <motion.h2 variants={ANIMATIONS.item} className="text-sm font-medium uppercase tracking-[0.2em] text-muted-foreground mb-2 font-sans">
+        {data.label}
+      </motion.h2>
+      <motion.h1 variants={ANIMATIONS.item} className="text-3xl md:text-4xl lg:text-5xl font-serif font-semibold tracking-tight mb-3 text-foreground">
+        {data.title}
+      </motion.h1>
+      <motion.p variants={ANIMATIONS.item} className="text-muted-foreground mb-8 leading-relaxed font-sans">
+        {data.description}
+      </motion.p>
 
-      <div className="relative z-10">
-        {/* Header */}
+      {/* Feature Grid */}
+      <motion.div variants={ANIMATIONS.item} className={`grid grid-cols-2 gap-4 w-full mb-6`}>
+        {data.features.map((feature, idx) => (
+          <div
+            key={idx}
+            className="bg-card border border-border rounded-xl p-4 shadow-emboss"
+          >
+            <div className="flex items-center gap-2 mb-2">
+              <feature.icon className="w-4 h-4 text-primary" />
+              <span className={`text-sm font-medium ${feature.value > 50 ? 'text-foreground' : 'text-muted-foreground'}`}>
+                {feature.label}
+              </span>
+            </div>
+            <div className="text-2xl font-serif font-bold text-foreground">
+              {feature.value}%
+            </div>
+            <div className="mt-2 h-1.5 bg-secondary rounded-full overflow-hidden">
+              <motion.div
+                initial={{ width: 0 }}
+                animate={{ width: `${feature.value}%` }}
+                transition={{ duration: 1, delay: 0.5 + idx * 0.2 }}
+                className={`h-full rounded-full ${barColorClass}`}
+              />
+            </div>
+          </div>
+        ))}
+
+        <div className="col-span-2">
+          <button className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-primary text-primary-foreground rounded-lg font-medium transition-all hover:bg-primary/90 shadow-emboss font-sans">
+            Learn More
+            <ChevronRight className="w-4 h-4" />
+          </button>
+        </div>
+      </motion.div>
+
+      {/* Coverage */}
+      <motion.div variants={ANIMATIONS.item} className="flex items-center gap-2 text-sm text-muted-foreground">
+        <Scale className="w-4 h-4 text-primary" />
+        {data.stats.percentage}% Coverage
+      </motion.div>
+    </motion.div>
+  );
+};
+
+const Switcher = ({
+  activeId,
+  onToggle
+}: {
+  activeId: SideId;
+  onToggle: (id: SideId) => void
+}) => {
+  const options = Object.values(SIDE_DATA).map(p => ({ id: p.id, label: p.label }));
+
+  return (
+    <div className="flex justify-center">
+      <div className="relative flex p-1 bg-card border border-border rounded-full shadow-emboss">
+        {options.map((opt) => (
+          <motion.button
+            key={opt.id}
+            onClick={() => onToggle(opt.id)}
+            whileTap={{ scale: 0.96 }}
+            className="relative px-6 py-3 rounded-full flex items-center justify-center text-sm font-medium focus:outline-none font-sans transition-colors"
+          >
+            {activeId === opt.id && (
+              <motion.div
+                layoutId="activePill"
+                className="absolute inset-0 bg-primary rounded-full"
+                transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+              />
+            )}
+            <span className={`relative z-10 ${activeId === opt.id ? 'text-primary-foreground' : 'text-muted-foreground hover:text-foreground'}`}>
+              {opt.label}
+            </span>
+          </motion.button>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+// =========================================
+// 4. MAIN COMPONENT
+// =========================================
+
+export default function LegalAIShowcase() {
+  const [activeSide, setActiveSide] = useState<SideId>('justice');
+
+  const currentData = SIDE_DATA[activeSide];
+  const isLeft = activeSide === 'justice';
+
+  return (
+    <section className="relative min-h-[80vh] bg-background overflow-hidden py-16 md:py-24">
+      <BackgroundGradient isLeft={isLeft} />
+
+      <div className="container mx-auto px-6 relative z-10">
+        {/* Section Header */}
         <div className="text-center mb-12">
-          <p className="text-gold uppercase tracking-[0.3em] text-sm mb-2">The Nyaya Advantage</p>
-          <h2 className="font-serif text-3xl md:text-4xl text-foreground">Where Law Meets Intelligence</h2>
+          <h2 className="text-sm uppercase tracking-[0.3em] text-muted-foreground mb-4 font-sans">
+            The Nyaya Advantage
+          </h2>
+          <h3 className="text-3xl md:text-4xl font-serif font-semibold text-foreground">
+            Where Law Meets Intelligence
+          </h3>
         </div>
 
-        {/* Content Grid */}
-        <div className="grid md:grid-cols-2 gap-8 items-center min-h-[400px]">
+        {/* Content switches sides based on selection */}
+        <div className={`flex flex-col lg:flex-row items-center justify-center gap-12 lg:gap-24 ${!isLeft ? 'lg:flex-row-reverse' : ''}`}>
           {/* Visual */}
-          <div className="relative flex items-center justify-center">
-            <div className="absolute w-64 h-64 rounded-full border border-border/30 animate-pulse" />
-            <div className="absolute w-80 h-80 rounded-full border border-border/20" />
-            
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={active}
-                variants={imageVariants(isLegal)}
-                initial="initial"
-                animate="animate"
-                exit="exit"
-                className="relative z-10"
-              >
-                <div className="w-48 h-48 md:w-56 md:h-56 rounded-full bg-parchment/90 shadow-elevated flex items-center justify-center">
-                  <img src={data.image} alt={data.title} className="w-32 h-32 md:w-40 md:h-40 object-contain" />
-                </div>
-              </motion.div>
-            </AnimatePresence>
-
-            <motion.div
-              className="absolute -bottom-4 px-4 py-2 bg-background/80 backdrop-blur rounded-full border border-border/50"
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-            >
-              <span className="flex items-center gap-2 text-sm text-muted-foreground">
-                <Sparkles className="w-4 h-4 text-gold" />
-                {isLegal ? 'Comprehensive' : 'Intelligent'}
-              </span>
-            </motion.div>
-          </div>
+          <AnimatePresence mode="wait">
+            <ProductVisual key={currentData.id} data={currentData} isLeft={isLeft} />
+          </AnimatePresence>
 
           {/* Details */}
           <AnimatePresence mode="wait">
-            <motion.div
-              key={active}
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -20 }}
-              transition={{ type: 'spring', stiffness: 200, damping: 25 }}
-              className="space-y-6"
-            >
-              <div>
-                <p className="text-gold uppercase tracking-widest text-xs mb-2">{data.label}</p>
-                <h3 className="font-serif text-2xl md:text-3xl text-foreground mb-3">{data.title}</h3>
-                <p className="text-muted-foreground leading-relaxed">{data.description}</p>
-              </div>
-
-              {/* Features */}
-              <div className="grid grid-cols-2 gap-4">
-                {data.features.map((f) => (
-                  <div key={f.label} className="bg-background/60 backdrop-blur rounded-xl p-4 border border-border/50">
-                    <div className="flex items-center gap-2 text-muted-foreground text-sm mb-1">
-                      <f.icon className="w-4 h-4" />
-                      {f.label}
-                    </div>
-                    <div className="text-2xl font-semibold text-foreground">{f.value}%</div>
-                    <div className="mt-2 h-1.5 bg-muted rounded-full overflow-hidden">
-                      <motion.div
-                        className="h-full bg-gold rounded-full"
-                        initial={{ width: 0 }}
-                        animate={{ width: `${f.value}%` }}
-                        transition={{ duration: 0.8, delay: 0.2 }}
-                      />
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              <button className="w-full flex items-center justify-center gap-2 bg-leather hover:bg-leather/90 text-parchment py-3 rounded-xl transition-colors">
-                Learn More <ChevronRight className="w-4 h-4" />
-              </button>
-
-              <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <Sparkles className="w-4 h-4 text-gold" />
-                98% Coverage
-              </div>
-            </motion.div>
+            <ProductDetails key={currentData.id} data={currentData} isLeft={isLeft} />
           </AnimatePresence>
         </div>
 
-        {/* Switcher */}
-        <div className="flex justify-center mt-12">
-          <div className="flex bg-background/60 backdrop-blur rounded-full p-1.5 border border-border/50">
-            {Object.values(DATA).map((item) => (
-              <button
-                key={item.id}
-                onClick={() => setActive(item.id)}
-                className={`relative px-6 py-2.5 rounded-full text-sm font-medium transition-colors ${
-                  active === item.id ? 'text-foreground' : 'text-muted-foreground hover:text-foreground'
-                }`}
-              >
-                {active === item.id && (
-                  <motion.div
-                    layoutId="showcase-bg"
-                    className="absolute inset-0 bg-gold/20 rounded-full border border-gold/30"
-                    transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-                  />
-                )}
-                <span className="relative z-10">{item.label}</span>
-              </button>
-            ))}
-          </div>
+        <div className="mt-16">
+          <Switcher activeId={activeSide} onToggle={setActiveSide} />
         </div>
       </div>
-    </div>
+    </section>
   );
 }

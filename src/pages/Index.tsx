@@ -9,21 +9,23 @@ import VisionSection from "@/components/home/VisionSection";
 import CTASection from "@/components/home/CTASection";
 import LegalAIShowcase from "@/components/ui/legal-ai-showcase";
 
-const Index = () => (
-  <div className="min-h-screen bg-background">
-    <Navbar />
-    <main>
-      <HeroSection />
-      <ProblemSection />
-      <LegalAIShowcase />
-      <SolutionSection />
-      <FeaturesSection />
-      <AudienceSection />
-      <VisionSection />
-      <CTASection />
-    </main>
-    <Footer />
-  </div>
-);
+const Index = () => {
+  return (
+    <div className="min-h-screen bg-background">
+      <Navbar />
+      <main>
+        <HeroSection />
+        <LegalAIShowcase />
+        <ProblemSection />
+        <SolutionSection />
+        <FeaturesSection />
+        <AudienceSection />
+        <VisionSection />
+        <CTASection />
+      </main>
+      <Footer />
+    </div>
+  );
+};
 
 export default Index;
