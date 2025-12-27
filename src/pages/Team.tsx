@@ -1,142 +1,185 @@
 import { motion } from "framer-motion";
-import { Scale, Gavel, BookOpen, FileText } from "lucide-react";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 
 import jinalImg from "@/assets/team/jinal.jpeg";
 import nidhiImg from "@/assets/team/nidhi.jpeg";
 import shoaibImg from "@/assets/team/shoaib.jpeg";
+import lawyerLeft from "@/assets/team/lawyer-left.png";
+import lawyerRight from "@/assets/team/lawyer-right.png";
 
 interface TeamMember {
   name: string;
+  displayName: string;
   role: string;
-  responsibilities: string[];
+  description: string;
   image: string | null;
-  isLead?: boolean;
 }
 
 const teamMembers: TeamMember[] = [
   {
     name: "Shoaib",
-    role: "Team Lead",
-    responsibilities: ["Backend", "Finetuning", "RAG"],
+    displayName: "MEET SHOAIB",
+    role: "Team Lead • Backend Developer",
+    description:
+      "Leading the Nyaya AI project with expertise in backend architecture, model finetuning, and RAG implementation. Passionate about making legal knowledge accessible to everyone through intelligent AI systems.",
     image: shoaibImg,
-    isLead: true,
   },
   {
     name: "Vignesh Reddy",
+    displayName: "MEET VIGNESH",
     role: "Deployment & Developer",
-    responsibilities: ["Backend", "Finetuning", "RAG"],
-    image: null, // Placeholder
+    description:
+      "Specializing in deployment pipelines, backend development, and AI model optimization. Ensures seamless integration of finetuned models and RAG systems for production-ready performance.",
+    image: null,
   },
   {
     name: "Jinal Thakkar",
-    role: "GD & Frontend",
-    responsibilities: ["Graphic Design", "Frontend Development"],
+    displayName: "MEET JINAL",
+    role: "GD & Frontend Developer",
+    description:
+      "Crafting beautiful user experiences through thoughtful graphic design and modern frontend development. Brings creative vision to life with pixel-perfect implementation.",
     image: jinalImg,
   },
   {
     name: "Nidhi Shah",
-    role: "GD & Frontend",
-    responsibilities: ["Graphic Design", "Frontend Development"],
+    displayName: "MEET NIDHI",
+    role: "GD & Frontend Developer",
+    description:
+      "Combining artistic design sensibility with technical frontend expertise. Creates engaging visual interfaces that make complex legal information intuitive and accessible.",
     image: nidhiImg,
   },
 ];
 
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.2,
-      delayChildren: 0.3,
-    },
-  },
-};
+const TeamMemberSection = ({
+  member,
+  index,
+}: {
+  member: TeamMember;
+  index: number;
+}) => {
+  const isEven = index % 2 === 0;
 
-const itemVariants = {
-  hidden: { opacity: 0, y: 50 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: {
-      duration: 0.8,
-      ease: [0.25, 0.46, 0.45, 0.94] as const,
-    },
-  },
-};
-
-const TeamMemberCard = ({ member, index }: { member: TeamMember; index: number }) => {
   return (
-    <motion.div
-      variants={itemVariants}
-      whileHover={{ scale: 1.02, y: -10 }}
-      className={`relative group ${member.isLead ? 'md:col-span-2 lg:col-span-1' : ''}`}
-    >
-      {/* Name above image */}
-      <motion.h3
-        initial={{ opacity: 0, x: -20 }}
+    <section className="relative min-h-screen flex items-center overflow-hidden py-20">
+      {/* Left decorative image */}
+      <motion.div
+        initial={{ opacity: 0, x: -100 }}
         whileInView={{ opacity: 1, x: 0 }}
-        transition={{ delay: 0.2 + index * 0.1, duration: 0.6 }}
-        className="text-3xl md:text-4xl lg:text-5xl font-serif font-bold mb-4 text-foreground tracking-tight"
+        viewport={{ once: true }}
+        transition={{ duration: 0.8, delay: 0.2 }}
+        className="absolute left-0 bottom-0 w-48 md:w-64 lg:w-80 z-10 pointer-events-none"
       >
-        {member.name}
-      </motion.h3>
+        <img
+          src={lawyerLeft}
+          alt="Legal professional"
+          className="w-full h-auto object-contain opacity-90"
+        />
+      </motion.div>
 
-      {/* Image container */}
-      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary/10 to-accent/10 aspect-[3/4] shadow-elevated">
-        {member.image ? (
-          <motion.img
-            src={member.image}
-            alt={member.name}
-            className="w-full h-full object-cover object-top grayscale hover:grayscale-0 transition-all duration-700"
-            whileHover={{ scale: 1.1 }}
-            transition={{ duration: 0.6 }}
-          />
-        ) : (
-          <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-muted to-muted/50">
-            <div className="text-center p-6">
-              <div className="w-32 h-32 mx-auto mb-4 rounded-full bg-primary/20 flex items-center justify-center">
-                <span className="text-5xl font-serif font-bold text-primary">
-                  {member.name.charAt(0)}
-                </span>
-              </div>
-              <p className="text-muted-foreground text-sm">Photo coming soon</p>
-            </div>
-          </div>
-        )}
+      {/* Right decorative image */}
+      <motion.div
+        initial={{ opacity: 0, x: 100 }}
+        whileInView={{ opacity: 1, x: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.8, delay: 0.3 }}
+        className="absolute right-0 bottom-0 w-48 md:w-64 lg:w-80 z-10 pointer-events-none"
+      >
+        <img
+          src={lawyerRight}
+          alt="Legal professional"
+          className="w-full h-auto object-contain opacity-90"
+        />
+      </motion.div>
 
-        {/* Overlay with role info */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileHover={{ opacity: 1 }}
-          className="absolute inset-0 bg-gradient-to-t from-background/95 via-background/50 to-transparent flex flex-col justify-end p-6"
+      <div className="container mx-auto px-6 relative z-20">
+        {/* Large Display Name */}
+        <motion.h2
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="text-5xl md:text-7xl lg:text-8xl xl:text-9xl font-serif font-bold text-foreground tracking-tighter text-center mb-8 md:mb-12"
         >
+          {member.displayName.split(" ").map((word, i) => (
+            <span key={i}>
+              {i === 1 ? (
+                <span className="text-primary">{word}</span>
+              ) : (
+                word
+              )}{" "}
+            </span>
+          ))}
+        </motion.h2>
+
+        {/* Content Layout */}
+        <div
+          className={`flex flex-col ${
+            isEven ? "lg:flex-row" : "lg:flex-row-reverse"
+          } items-center gap-8 lg:gap-16`}
+        >
+          {/* Member Photo */}
           <motion.div
-            initial={{ y: 20, opacity: 0 }}
-            whileHover={{ y: 0, opacity: 1 }}
-            transition={{ duration: 0.3 }}
+            initial={{ opacity: 0, scale: 0.9 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+            className="flex-1 flex justify-center"
           >
-            {member.isLead && (
-              <span className="inline-block px-3 py-1 mb-2 text-xs font-semibold bg-primary text-primary-foreground rounded-full">
-                Team Lead
-              </span>
-            )}
-            <p className="text-lg font-semibold text-foreground mb-2">{member.role}</p>
-            <div className="flex flex-wrap gap-2">
-              {member.responsibilities.map((resp, i) => (
-                <span
-                  key={i}
-                  className="text-xs px-2 py-1 bg-secondary/80 text-secondary-foreground rounded-md"
-                >
-                  {resp}
-                </span>
-              ))}
+            <div className="relative w-64 md:w-80 lg:w-96 aspect-[3/4]">
+              {member.image ? (
+                <img
+                  src={member.image}
+                  alt={member.name}
+                  className="w-full h-full object-cover object-top rounded-2xl shadow-elevated"
+                />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-muted to-muted/50 rounded-2xl shadow-elevated">
+                  <div className="text-center p-6">
+                    <div className="w-32 h-32 mx-auto mb-4 rounded-full bg-primary/20 flex items-center justify-center">
+                      <span className="text-6xl font-serif font-bold text-primary">
+                        {member.name.charAt(0)}
+                      </span>
+                    </div>
+                    <p className="text-muted-foreground text-sm">
+                      Photo coming soon
+                    </p>
+                  </div>
+                </div>
+              )}
             </div>
           </motion.div>
-        </motion.div>
+
+          {/* Info Box */}
+          <motion.div
+            initial={{ opacity: 0, x: isEven ? 50 : -50 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, delay: 0.4 }}
+            className="flex-1 max-w-xl"
+          >
+            <div className="bg-card/50 backdrop-blur-sm p-8 rounded-2xl border border-border shadow-page">
+              <h3 className="text-2xl md:text-3xl font-serif font-bold text-foreground mb-2">
+                {member.role.split("•")[0].trim()}
+              </h3>
+              {member.role.includes("•") && (
+                <p className="text-primary font-medium mb-4 text-lg">
+                  {member.role.split("•")[1]?.trim()}
+                </p>
+              )}
+              <p className="text-muted-foreground leading-relaxed text-base md:text-lg">
+                {member.description}
+              </p>
+            </div>
+          </motion.div>
+        </div>
       </div>
-    </motion.div>
+
+      {/* Divider */}
+      {index < teamMembers.length - 1 && (
+        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-24 h-px bg-gradient-to-r from-transparent via-border to-transparent" />
+      )}
+    </section>
   );
 };
 
@@ -146,70 +189,7 @@ const Team = () => {
       <Navbar />
 
       {/* Hero Section */}
-      <section className="relative pt-32 pb-20 overflow-hidden">
-        {/* Floating law icons - left side */}
-        <motion.div
-          animate={{
-            y: [-10, 10, -10],
-            rotate: [-5, 5, -5],
-          }}
-          transition={{
-            duration: 6,
-            repeat: Infinity,
-            ease: "easeInOut",
-          }}
-          className="absolute left-4 md:left-10 top-40 opacity-10 dark:opacity-5"
-        >
-          <Scale className="w-24 h-24 md:w-40 md:h-40 text-primary" />
-        </motion.div>
-        <motion.div
-          animate={{
-            y: [-10, 10, -10],
-            rotate: [-5, 5, -5],
-          }}
-          transition={{
-            duration: 6,
-            repeat: Infinity,
-            ease: "easeInOut",
-            delay: 2,
-          }}
-          className="absolute left-8 md:left-20 bottom-20 opacity-10 dark:opacity-5"
-        >
-          <BookOpen className="w-20 h-20 md:w-32 md:h-32 text-primary" />
-        </motion.div>
-
-        {/* Floating law icons - right side */}
-        <motion.div
-          animate={{
-            y: [-10, 10, -10],
-            rotate: [-5, 5, -5],
-          }}
-          transition={{
-            duration: 6,
-            repeat: Infinity,
-            ease: "easeInOut",
-            delay: 1,
-          }}
-          className="absolute right-4 md:right-10 top-60 opacity-10 dark:opacity-5"
-        >
-          <Gavel className="w-24 h-24 md:w-40 md:h-40 text-primary" />
-        </motion.div>
-        <motion.div
-          animate={{
-            y: [-10, 10, -10],
-            rotate: [-5, 5, -5],
-          }}
-          transition={{
-            duration: 6,
-            repeat: Infinity,
-            ease: "easeInOut",
-            delay: 3,
-          }}
-          className="absolute right-8 md:right-20 bottom-40 opacity-10 dark:opacity-5"
-        >
-          <FileText className="w-20 h-20 md:w-32 md:h-32 text-primary" />
-        </motion.div>
-
+      <section className="relative pt-32 pb-12 overflow-hidden">
         <div className="container mx-auto px-6">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -230,11 +210,9 @@ const Team = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3, duration: 0.8 }}
-              className="text-6xl md:text-8xl lg:text-9xl font-serif font-bold text-foreground tracking-tighter leading-none mb-6"
+              className="text-5xl md:text-7xl lg:text-8xl font-serif font-bold text-foreground tracking-tighter leading-none mb-6"
             >
-              MEET THE
-              <br />
-              <span className="text-primary">TEAM</span>
+              THE <span className="text-primary">TEAM</span>
             </motion.h1>
 
             <motion.p
@@ -244,39 +222,15 @@ const Team = () => {
               className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto"
             >
               Passionate innovators building the future of legal AI assistance.
-              United by curiosity, driven by impact.
             </motion.p>
           </motion.div>
         </div>
       </section>
 
-      {/* Team Grid */}
-      <section className="relative py-20 px-6">
-        <div className="container mx-auto">
-          <motion.div
-            variants={containerVariants}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-100px" }}
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-12"
-          >
-            {teamMembers.map((member, index) => (
-              <TeamMemberCard key={member.name} member={member} index={index} />
-            ))}
-          </motion.div>
-        </div>
-
-        {/* More floating decorations */}
-        <motion.div
-          animate={{ 
-            rotate: 360,
-            transition: { duration: 30, repeat: Infinity, ease: "linear" }
-          }}
-          className="absolute left-1/4 top-1/2 opacity-5 pointer-events-none"
-        >
-          <Scale className="w-64 h-64 text-primary" />
-        </motion.div>
-      </section>
+      {/* Team Member Sections */}
+      {teamMembers.map((member, index) => (
+        <TeamMemberSection key={member.name} member={member} index={index} />
+      ))}
 
       {/* Quote Section */}
       <section className="py-20 px-6 bg-gradient-to-b from-transparent to-muted/30">
