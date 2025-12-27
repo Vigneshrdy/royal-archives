@@ -1,4 +1,3 @@
-import { motion } from "framer-motion";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 
@@ -51,137 +50,65 @@ const teamMembers: TeamMember[] = [
 
 const TeamMemberSection = ({ member }: { member: TeamMember }) => {
   return (
-    <section className="relative min-h-screen overflow-hidden bg-background">
-      {/* Hero Container */}
-      <div className="relative h-screen flex flex-col">
-        {/* Large Name Title at Top */}
-        <div className="pt-20 md:pt-24 lg:pt-28 px-4 text-center">
-          <motion.h1
-            initial={{ opacity: 0, y: -30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="text-[18vw] md:text-[14vw] lg:text-[12vw] font-serif font-bold tracking-tighter leading-none"
-          >
-            <span className="text-foreground">KNOW </span>
-            <span className="text-primary">{member.firstName}</span>
-          </motion.h1>
+    <section className="relative w-full h-screen overflow-hidden bg-white">
+      {/* TITLE — CUTS THROUGH FACE */}
+      <h1 className="absolute top-8 left-1/2 -translate-x-1/2 text-[60px] md:text-[100px] lg:text-[148px] font-extrabold tracking-[-4px] md:tracking-[-7px] z-[5] whitespace-nowrap pointer-events-none text-black">
+        KNOW <span className="ml-4 md:ml-9">{member.firstName}</span>
+      </h1>
+
+      {/* CENTER PORTRAIT */}
+      {member.image ? (
+        <img
+          src={member.image}
+          alt={member.name}
+          className="absolute bottom-0 left-1/2 -translate-x-1/2 h-[70vh] md:h-[82vh] object-cover z-[3]"
+        />
+      ) : (
+        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 h-[70vh] md:h-[82vh] w-[300px] md:w-[400px] bg-gray-200 flex items-center justify-center z-[3]">
+          <span className="text-[120px] font-extrabold text-gray-400">
+            {member.firstName.charAt(0)}
+          </span>
         </div>
+      )}
 
-        {/* Images and Text Container */}
-        <div className="relative flex-1 flex items-end justify-center">
-          {/* Left Side Image */}
-          <motion.div
-            initial={{ opacity: 0, x: -50 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.7, delay: 0.2 }}
-            className="absolute left-0 bottom-0 z-10"
-            style={{ width: "25vw", maxWidth: "280px" }}
-          >
-            {member.image ? (
-              <img
-                src={member.image}
-                alt={`${member.name} left`}
-                className="w-full h-auto object-contain"
-                style={{ maxHeight: "50vh" }}
-              />
-            ) : (
-              <div 
-                className="w-full bg-muted/50 flex items-center justify-center"
-                style={{ height: "40vh" }}
-              >
-                <span className="text-6xl font-serif font-bold text-primary/30">
-                  {member.firstName.charAt(0)}
-                </span>
-              </div>
-            )}
-          </motion.div>
-
-          {/* Center Main Image */}
-          <motion.div
-            initial={{ opacity: 0, y: 50 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.7, delay: 0.1 }}
-            className="relative z-20"
-            style={{ width: "35vw", maxWidth: "400px" }}
-          >
-            {member.image ? (
-              <img
-                src={member.image}
-                alt={member.name}
-                className="w-full h-auto object-contain"
-                style={{ maxHeight: "65vh" }}
-              />
-            ) : (
-              <div 
-                className="w-full bg-muted flex items-center justify-center rounded-t-2xl"
-                style={{ height: "55vh" }}
-              >
-                <div className="text-center">
-                  <div className="w-24 h-24 md:w-32 md:h-32 mx-auto mb-4 rounded-full bg-primary/20 flex items-center justify-center">
-                    <span className="text-5xl md:text-6xl font-serif font-bold text-primary">
-                      {member.firstName.charAt(0)}
-                    </span>
-                  </div>
-                  <p className="text-muted-foreground text-sm">Photo coming soon</p>
-                </div>
-              </div>
-            )}
-          </motion.div>
-
-          {/* Right Side Image */}
-          <motion.div
-            initial={{ opacity: 0, x: 50 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.7, delay: 0.3 }}
-            className="absolute right-0 bottom-0 z-10"
-            style={{ width: "25vw", maxWidth: "280px" }}
-          >
-            {member.image ? (
-              <img
-                src={member.image}
-                alt={`${member.name} right`}
-                className="w-full h-auto object-contain"
-                style={{ maxHeight: "50vh" }}
-              />
-            ) : (
-              <div 
-                className="w-full bg-muted/50 flex items-center justify-center"
-                style={{ height: "40vh" }}
-              >
-                <span className="text-6xl font-serif font-bold text-primary/30">
-                  {member.firstName.charAt(0)}
-                </span>
-              </div>
-            )}
-          </motion.div>
-
-          {/* Text Block - Top Right */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.7, delay: 0.4 }}
-            className="absolute top-0 right-8 md:right-16 lg:right-24 z-30 text-right max-w-[180px] md:max-w-[220px] lg:max-w-[280px]"
-          >
-            <h2 className="text-sm md:text-lg lg:text-xl font-serif font-bold text-foreground mb-3 tracking-wide uppercase">
-              {member.role}
-            </h2>
-            <p className="text-[10px] md:text-xs lg:text-sm text-muted-foreground leading-relaxed hidden md:block">
-              {member.description}
-            </p>
-          </motion.div>
+      {/* LEFT PORTRAIT - GRAYSCALE */}
+      {member.image ? (
+        <img
+          src={member.image}
+          alt={`${member.name} left`}
+          className="absolute bottom-0 -left-10 h-[50vh] md:h-[60vh] object-cover grayscale z-[2]"
+        />
+      ) : (
+        <div className="absolute bottom-0 -left-10 h-[50vh] md:h-[60vh] w-[200px] md:w-[250px] bg-gray-300 flex items-center justify-center z-[2]">
+          <span className="text-[80px] font-extrabold text-gray-400">
+            {member.firstName.charAt(0)}
+          </span>
         </div>
+      )}
 
-        {/* Mobile Description */}
-        <div className="md:hidden px-6 py-6 bg-background">
-          <p className="text-xs text-muted-foreground leading-relaxed text-center max-w-sm mx-auto">
-            {member.description}
-          </p>
+      {/* RIGHT PORTRAIT - GRAYSCALE */}
+      {member.image ? (
+        <img
+          src={member.image}
+          alt={`${member.name} right`}
+          className="absolute bottom-0 -right-10 h-[50vh] md:h-[60vh] object-cover grayscale z-[2]"
+        />
+      ) : (
+        <div className="absolute bottom-0 -right-10 h-[50vh] md:h-[60vh] w-[200px] md:w-[250px] bg-gray-300 flex items-center justify-center z-[2]">
+          <span className="text-[80px] font-extrabold text-gray-400">
+            {member.firstName.charAt(0)}
+          </span>
         </div>
+      )}
+
+      {/* TEXT BLOCK */}
+      <div className="absolute right-4 md:right-36 top-1/2 -translate-y-1/2 w-64 md:w-72 z-[6]">
+        <h2 className="text-xs md:text-sm tracking-[1.4px] mb-3 font-semibold text-black">
+          {member.role}
+        </h2>
+        <p className="text-xs md:text-[13px] leading-relaxed text-[#2b2b2b]">
+          {member.description}
+        </p>
       </div>
     </section>
   );
@@ -189,50 +116,12 @@ const TeamMemberSection = ({ member }: { member: TeamMember }) => {
 
 const Team = () => {
   return (
-    <div className="min-h-screen bg-background transition-colors duration-300">
+    <div className="min-h-screen bg-white">
       <Navbar />
-
-      {/* Intro Section */}
-      <section className="pt-24 pb-8 px-6 bg-background">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="container mx-auto text-center"
-        >
-          <span className="inline-block px-4 py-1.5 text-xs font-medium bg-primary/10 text-primary rounded-full mb-4 tracking-widest">
-            KMIT • 2ND YEAR
-          </span>
-          <h1 className="text-2xl md:text-3xl lg:text-4xl font-serif font-bold text-foreground">
-            Meet The <span className="text-primary">Innovators</span>
-          </h1>
-        </motion.div>
-      </section>
-
-      {/* Team Members */}
+      
       {teamMembers.map((member) => (
         <TeamMemberSection key={member.name} member={member} />
       ))}
-
-      {/* Quote Section */}
-      <section className="py-16 px-6 bg-muted/20">
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          whileInView={{ opacity: 1, scale: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
-          className="container mx-auto text-center max-w-2xl"
-        >
-          <blockquote className="text-lg md:text-xl lg:text-2xl font-serif text-foreground leading-relaxed">
-            "Innovation happens when{" "}
-            <span className="text-primary font-semibold">passion</span> meets{" "}
-            <span className="text-primary font-semibold">purpose</span>."
-          </blockquote>
-          <p className="mt-4 text-muted-foreground text-sm">
-            — The Nyaya AI Team
-          </p>
-        </motion.div>
-      </section>
 
       <Footer />
     </div>
