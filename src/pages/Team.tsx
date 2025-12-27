@@ -50,10 +50,10 @@ const teamMembers: TeamMember[] = [
 
 const TeamMemberSection = ({ member }: { member: TeamMember }) => {
   return (
-    <section className="relative w-full h-screen overflow-hidden bg-background">
+    <section className="relative w-full min-h-screen overflow-hidden bg-background">
       {/* TITLE — CUTS THROUGH FACE */}
-      <h1 className="absolute top-8 left-1/2 -translate-x-1/2 text-[60px] md:text-[100px] lg:text-[148px] font-extrabold tracking-[-4px] md:tracking-[-7px] z-[5] whitespace-nowrap pointer-events-none text-foreground">
-        KNOW <span className="ml-4 md:ml-9">{member.firstName}</span>
+      <h1 className="absolute top-4 sm:top-6 md:top-8 left-1/2 -translate-x-1/2 text-[32px] sm:text-[48px] md:text-[80px] lg:text-[120px] xl:text-[148px] font-extrabold tracking-[-2px] sm:tracking-[-3px] md:tracking-[-5px] lg:tracking-[-7px] z-[5] whitespace-nowrap pointer-events-none text-foreground">
+        KNOW <span className="ml-2 sm:ml-3 md:ml-6 lg:ml-9">{member.firstName}</span>
       </h1>
 
       {/* CENTER PORTRAIT */}
@@ -61,52 +61,52 @@ const TeamMemberSection = ({ member }: { member: TeamMember }) => {
         <img
           src={member.image}
           alt={member.name}
-          className="absolute bottom-0 left-1/2 -translate-x-1/2 h-[70vh] md:h-[82vh] object-cover z-[3]"
+          className="absolute bottom-0 left-1/2 -translate-x-1/2 h-[55vh] sm:h-[60vh] md:h-[70vh] lg:h-[82vh] object-cover z-[3]"
         />
       ) : (
-        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 h-[70vh] md:h-[82vh] w-[300px] md:w-[400px] bg-muted flex items-center justify-center z-[3]">
-          <span className="text-[120px] font-extrabold text-muted-foreground">
+        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 h-[55vh] sm:h-[60vh] md:h-[70vh] lg:h-[82vh] w-[200px] sm:w-[250px] md:w-[350px] lg:w-[400px] bg-muted flex items-center justify-center z-[3]">
+          <span className="text-[80px] sm:text-[100px] md:text-[120px] font-extrabold text-muted-foreground">
             {member.firstName.charAt(0)}
           </span>
         </div>
       )}
 
-      {/* LEFT PORTRAIT - GRAYSCALE */}
+      {/* LEFT PORTRAIT - GRAYSCALE (hidden on small mobile) */}
       {member.image ? (
         <img
           src={member.image}
           alt={`${member.name} left`}
-          className="absolute bottom-0 -left-10 h-[50vh] md:h-[60vh] object-cover grayscale z-[2]"
+          className="hidden sm:block absolute bottom-0 -left-5 sm:-left-8 md:-left-10 h-[35vh] sm:h-[40vh] md:h-[50vh] lg:h-[60vh] object-cover grayscale z-[2]"
         />
       ) : (
-        <div className="absolute bottom-0 -left-10 h-[50vh] md:h-[60vh] w-[200px] md:w-[250px] bg-muted/70 flex items-center justify-center z-[2]">
-          <span className="text-[80px] font-extrabold text-muted-foreground">
+        <div className="hidden sm:flex absolute bottom-0 -left-5 sm:-left-8 md:-left-10 h-[35vh] sm:h-[40vh] md:h-[50vh] lg:h-[60vh] w-[120px] sm:w-[150px] md:w-[200px] lg:w-[250px] bg-muted/70 items-center justify-center z-[2]">
+          <span className="text-[50px] sm:text-[60px] md:text-[80px] font-extrabold text-muted-foreground">
             {member.firstName.charAt(0)}
           </span>
         </div>
       )}
 
-      {/* RIGHT PORTRAIT - GRAYSCALE */}
+      {/* RIGHT PORTRAIT - GRAYSCALE (hidden on small mobile) */}
       {member.image ? (
         <img
           src={member.image}
           alt={`${member.name} right`}
-          className="absolute bottom-0 -right-10 h-[50vh] md:h-[60vh] object-cover grayscale z-[2]"
+          className="hidden sm:block absolute bottom-0 -right-5 sm:-right-8 md:-right-10 h-[35vh] sm:h-[40vh] md:h-[50vh] lg:h-[60vh] object-cover grayscale z-[2]"
         />
       ) : (
-        <div className="absolute bottom-0 -right-10 h-[50vh] md:h-[60vh] w-[200px] md:w-[250px] bg-muted/70 flex items-center justify-center z-[2]">
-          <span className="text-[80px] font-extrabold text-muted-foreground">
+        <div className="hidden sm:flex absolute bottom-0 -right-5 sm:-right-8 md:-right-10 h-[35vh] sm:h-[40vh] md:h-[50vh] lg:h-[60vh] w-[120px] sm:w-[150px] md:w-[200px] lg:w-[250px] bg-muted/70 items-center justify-center z-[2]">
+          <span className="text-[50px] sm:text-[60px] md:text-[80px] font-extrabold text-muted-foreground">
             {member.firstName.charAt(0)}
           </span>
         </div>
       )}
 
-      {/* TEXT BLOCK */}
-      <div className="absolute right-4 md:right-36 top-1/2 -translate-y-1/2 w-64 md:w-72 z-[6]">
-        <h2 className="text-xs md:text-sm tracking-[1.4px] mb-3 font-semibold text-foreground">
+      {/* TEXT BLOCK - Bottom on mobile, right side on larger screens */}
+      <div className="absolute bottom-4 left-4 right-4 sm:bottom-auto sm:left-auto sm:right-4 md:right-20 lg:right-36 sm:top-1/2 sm:-translate-y-1/2 w-auto sm:w-48 md:w-64 lg:w-72 z-[6] bg-background/80 sm:bg-transparent p-4 sm:p-0 rounded-lg sm:rounded-none backdrop-blur-sm sm:backdrop-blur-none">
+        <h2 className="text-[10px] sm:text-xs md:text-sm tracking-[1px] sm:tracking-[1.4px] mb-2 sm:mb-3 font-semibold text-foreground">
           {member.role}
         </h2>
-        <p className="text-xs md:text-[13px] leading-relaxed text-muted-foreground">
+        <p className="text-[10px] sm:text-xs md:text-[13px] leading-relaxed text-muted-foreground">
           {member.description}
         </p>
       </div>
