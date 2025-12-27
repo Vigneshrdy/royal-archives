@@ -51,104 +51,134 @@ const teamMembers: TeamMember[] = [
 
 const TeamMemberSection = ({ member }: { member: TeamMember }) => {
   return (
-    <section className="relative w-full min-h-screen bg-background overflow-hidden">
+    <section className="relative min-h-screen overflow-hidden bg-background">
       {/* Hero Container */}
       <div className="relative h-screen flex flex-col">
         {/* Large Name Title at Top */}
-        <div className="absolute top-16 md:top-20 left-0 right-0 z-10 text-center">
+        <div className="pt-20 md:pt-24 lg:pt-28 px-4 text-center">
           <motion.h1
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: -30 }}
             whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] as const }}
             viewport={{ once: true }}
-            className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl xl:text-9xl font-black tracking-tighter text-foreground"
+            transition={{ duration: 0.6 }}
+            className="text-[18vw] md:text-[14vw] lg:text-[12vw] font-serif font-bold tracking-tighter leading-none"
           >
-            KNOW{" "}
+            <span className="text-foreground">KNOW </span>
             <span className="text-primary">{member.firstName}</span>
           </motion.h1>
         </div>
 
         {/* Images and Text Container */}
-        <div className="flex-1 flex items-end justify-center relative">
-          {/* Left Side Image - pushed to corner and smaller */}
-          <div className="hidden md:block absolute bottom-0 -left-16 lg:-left-20 z-[1]">
+        <div className="relative flex-1 flex items-end justify-center">
+          {/* Left Side Image */}
+          <motion.div
+            initial={{ opacity: 0, x: -50 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.7, delay: 0.2 }}
+            className="absolute left-0 bottom-0 z-10"
+            style={{ width: "25vw", maxWidth: "280px" }}
+          >
             {member.image ? (
               <img
                 src={member.image}
-                alt={`${member.name} side`}
-                className="h-[40vh] lg:h-[50vh] w-auto object-cover grayscale opacity-60"
+                alt={`${member.name} left`}
+                className="w-full h-auto object-contain"
+                style={{ maxHeight: "50vh" }}
               />
             ) : (
-              <div className="h-[40vh] lg:h-[50vh] w-[140px] lg:w-[180px] bg-muted/50 flex items-center justify-center">
-                <span className="text-5xl lg:text-6xl font-black text-muted-foreground/30">
+              <div 
+                className="w-full bg-muted/50 flex items-center justify-center"
+                style={{ height: "40vh" }}
+              >
+                <span className="text-6xl font-serif font-bold text-primary/30">
                   {member.firstName.charAt(0)}
                 </span>
               </div>
             )}
-          </div>
+          </motion.div>
 
           {/* Center Main Image */}
-          <div className="relative z-[2]">
+          <motion.div
+            initial={{ opacity: 0, y: 50 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.7, delay: 0.1 }}
+            className="relative z-20"
+            style={{ width: "35vw", maxWidth: "400px" }}
+          >
             {member.image ? (
               <img
                 src={member.image}
                 alt={member.name}
-                className="h-[55vh] md:h-[65vh] lg:h-[75vh] w-auto object-cover"
+                className="w-full h-auto object-contain"
+                style={{ maxHeight: "65vh" }}
               />
             ) : (
-              <div className="h-[55vh] md:h-[65vh] lg:h-[75vh] w-[250px] md:w-[300px] lg:w-[350px] bg-muted flex items-center justify-center">
+              <div 
+                className="w-full bg-muted flex items-center justify-center rounded-t-2xl"
+                style={{ height: "55vh" }}
+              >
                 <div className="text-center">
-                  <div className="w-28 h-28 md:w-36 md:h-36 mx-auto rounded-full bg-muted-foreground/20 flex items-center justify-center mb-6">
-                    <span className="text-5xl md:text-6xl font-black text-muted-foreground/50">
+                  <div className="w-24 h-24 md:w-32 md:h-32 mx-auto mb-4 rounded-full bg-primary/20 flex items-center justify-center">
+                    <span className="text-5xl md:text-6xl font-serif font-bold text-primary">
                       {member.firstName.charAt(0)}
                     </span>
                   </div>
-                  <p className="text-base md:text-lg text-muted-foreground">Photo coming soon</p>
+                  <p className="text-muted-foreground text-sm">Photo coming soon</p>
                 </div>
               </div>
             )}
-          </div>
+          </motion.div>
 
-          {/* Right Side Image - pushed to corner and smaller */}
-          <div className="hidden md:block absolute bottom-0 -right-16 lg:-right-20 z-[1]">
+          {/* Right Side Image */}
+          <motion.div
+            initial={{ opacity: 0, x: 50 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.7, delay: 0.3 }}
+            className="absolute right-0 bottom-0 z-10"
+            style={{ width: "25vw", maxWidth: "280px" }}
+          >
             {member.image ? (
               <img
                 src={member.image}
-                alt={`${member.name} side`}
-                className="h-[40vh] lg:h-[50vh] w-auto object-cover grayscale opacity-60"
+                alt={`${member.name} right`}
+                className="w-full h-auto object-contain"
+                style={{ maxHeight: "50vh" }}
               />
             ) : (
-              <div className="h-[40vh] lg:h-[50vh] w-[140px] lg:w-[180px] bg-muted/50 flex items-center justify-center">
-                <span className="text-5xl lg:text-6xl font-black text-muted-foreground/30">
+              <div 
+                className="w-full bg-muted/50 flex items-center justify-center"
+                style={{ height: "40vh" }}
+              >
+                <span className="text-6xl font-serif font-bold text-primary/30">
                   {member.firstName.charAt(0)}
                 </span>
               </div>
             )}
-          </div>
+          </motion.div>
 
           {/* Text Block - Top Right */}
           <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8, delay: 0.3, ease: [0.22, 1, 0.36, 1] as const }}
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="hidden md:block absolute right-8 lg:right-20 xl:right-32 top-1/2 -translate-y-1/2 w-64 lg:w-80 z-[3]"
+            transition={{ duration: 0.7, delay: 0.4 }}
+            className="absolute top-0 right-8 md:right-16 lg:right-24 z-30 text-right max-w-[180px] md:max-w-[220px] lg:max-w-[280px]"
           >
-            <h2 className="text-base lg:text-lg tracking-[2px] mb-4 font-bold text-foreground">
+            <h2 className="text-sm md:text-lg lg:text-xl font-serif font-bold text-foreground mb-3 tracking-wide uppercase">
               {member.role}
             </h2>
-            <p className="text-sm lg:text-base leading-relaxed text-muted-foreground">
+            <p className="text-[10px] md:text-xs lg:text-sm text-muted-foreground leading-relaxed hidden md:block">
               {member.description}
             </p>
           </motion.div>
         </div>
 
         {/* Mobile Description */}
-        <div className="md:hidden px-6 py-8 bg-background">
-          <h2 className="text-sm tracking-[2px] mb-3 font-bold text-foreground text-center">
-            {member.role}
-          </h2>
-          <p className="text-sm leading-relaxed text-muted-foreground text-center">
+        <div className="md:hidden px-6 py-6 bg-background">
+          <p className="text-xs text-muted-foreground leading-relaxed text-center max-w-sm mx-auto">
             {member.description}
           </p>
         </div>
@@ -159,21 +189,22 @@ const TeamMemberSection = ({ member }: { member: TeamMember }) => {
 
 const Team = () => {
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background transition-colors duration-300">
       <Navbar />
 
       {/* Intro Section */}
-      <section className="pt-32 pb-16 md:pt-40 md:pb-24 text-center bg-background">
+      <section className="pt-24 pb-8 px-6 bg-background">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] as const }}
+          transition={{ duration: 0.6 }}
+          className="container mx-auto text-center"
         >
-          <span className="text-sm md:text-base tracking-[3px] text-muted-foreground font-medium">
+          <span className="inline-block px-4 py-1.5 text-xs font-medium bg-primary/10 text-primary rounded-full mb-4 tracking-widest">
             KMIT • 2ND YEAR
           </span>
-          <h1 className="mt-6 text-5xl md:text-7xl lg:text-8xl font-black tracking-tighter text-foreground">
-            Meet The Innovators
+          <h1 className="text-2xl md:text-3xl lg:text-4xl font-serif font-bold text-foreground">
+            Meet The <span className="text-primary">Innovators</span>
           </h1>
         </motion.div>
       </section>
@@ -184,22 +215,22 @@ const Team = () => {
       ))}
 
       {/* Quote Section */}
-      <section className="py-24 md:py-32 bg-background">
+      <section className="py-16 px-6 bg-muted/20">
         <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] as const }}
+          initial={{ opacity: 0, scale: 0.95 }}
+          whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true }}
-          className="max-w-4xl mx-auto px-6 text-center"
+          transition={{ duration: 0.8 }}
+          className="container mx-auto text-center max-w-2xl"
         >
-          <blockquote className="text-2xl md:text-4xl lg:text-5xl font-bold tracking-tight text-foreground leading-tight">
+          <blockquote className="text-lg md:text-xl lg:text-2xl font-serif text-foreground leading-relaxed">
             "Innovation happens when{" "}
-            <span className="text-primary">passion</span> meets{" "}
-            <span className="text-primary">purpose</span>."
+            <span className="text-primary font-semibold">passion</span> meets{" "}
+            <span className="text-primary font-semibold">purpose</span>."
           </blockquote>
-          <cite className="block mt-8 text-base md:text-lg text-muted-foreground not-italic">
+          <p className="mt-4 text-muted-foreground text-sm">
             — The Nyaya AI Team
-          </cite>
+          </p>
         </motion.div>
       </section>
 
