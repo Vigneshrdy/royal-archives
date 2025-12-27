@@ -1,9 +1,9 @@
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 
-import jinalImg from "@/assets/team/jinal.jpeg";
-import nidhiImg from "@/assets/team/nidhi-edited.png";
-import shoaibImg from "@/assets/team/shoaib.jpeg";
+import jinalImg from "@/assets/team/jinal-new.png";
+import nidhiImg from "@/assets/team/nidhi-new.png";
+import shoaibImg from "@/assets/team/shoaib-new.png";
 
 interface TeamMember {
   name: string;
@@ -96,7 +96,7 @@ const TeamMemberSection = ({ member }: { member: TeamMember }) => {
       {/* DESKTOP LAYOUT - Original absolute positioning */}
       <div className="hidden md:block relative min-h-screen overflow-hidden">
         {/* TITLE */}
-        <div className="absolute top-8 left-1/2 -translate-x-1/2 z-[5] pointer-events-none text-center">
+        <div className="absolute top-20 lg:top-24 left-1/2 -translate-x-1/2 z-[5] pointer-events-none text-center">
           <h1 className="text-[60px] lg:text-[90px] xl:text-[110px] font-extrabold tracking-[-3px] lg:tracking-[-5px] text-foreground leading-none whitespace-nowrap">
             {member.firstName}
           </h1>
