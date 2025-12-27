@@ -2,9 +2,9 @@ import { motion } from "framer-motion";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 
-import jinalImg from "@/assets/team/jinal.jpeg";
-import nidhiImg from "@/assets/team/nidhi-edited.png";
-import shoaibImg from "@/assets/team/shoaib.jpeg";
+import jinalImg from "@/assets/team/jinal-2.png";
+import nidhiImg from "@/assets/team/nidhi-2.png";
+import shoaibImg from "@/assets/team/shoaib-2.png";
 
 interface TeamMember {
   name: string;
