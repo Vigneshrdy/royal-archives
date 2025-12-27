@@ -1,8 +1,12 @@
 import { Link } from "react-router-dom";
 import { ArrowRight, BookOpen, Shield, Scale } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { TypewriterEffectSmooth } from "@/components/ui/typewriter-effect";
 
 const HeroSection = () => {
+  const explainedWords = [{ text: "Explained", className: "gold-emboss" }];
+  const simplifiedWords = [{ text: "Simplified", className: "gold-emboss" }];
+
   return (
     <section className="relative min-h-screen flex items-center justify-center pt-20 overflow-hidden parchment-texture">
       {/* Background Elements */}
@@ -29,12 +33,25 @@ const HeroSection = () => {
             <span className="text-sm font-medium text-foreground">India's First Legal AI Platform</span>
           </div>
 
-          {/* Main Headline */}
-          <h1 className="font-serif text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-semibold text-primary leading-tight mb-6 animate-fade-in-up opacity-0 stagger-1">
-            Justice, <span className="gold-emboss">Explained</span>.
-            <br />
-            Law, <span className="gold-emboss">Simplified</span>.
-          </h1>
+          {/* Main Headline with Typewriter Effect */}
+          <div className="font-serif text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-semibold text-primary leading-tight mb-6 animate-fade-in-up opacity-0 stagger-1">
+            <div className="flex items-center justify-center flex-wrap gap-x-4">
+              <span>Justice,</span>
+              <TypewriterEffectSmooth 
+                words={explainedWords} 
+                className="inline-flex !my-0" 
+                cursorClassName="!h-8 sm:!h-10 md:!h-12 lg:!h-14 bg-gold"
+              />
+            </div>
+            <div className="flex items-center justify-center flex-wrap gap-x-4">
+              <span>Law,</span>
+              <TypewriterEffectSmooth 
+                words={simplifiedWords} 
+                className="inline-flex !my-0" 
+                cursorClassName="!h-8 sm:!h-10 md:!h-12 lg:!h-14 bg-gold"
+              />
+            </div>
+          </div>
 
           {/* Tagline */}
           <p className="text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto mb-4 animate-fade-in-up opacity-0 stagger-2">

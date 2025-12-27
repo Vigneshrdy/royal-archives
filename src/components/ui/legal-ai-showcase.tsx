@@ -111,10 +111,10 @@ const ANIMATIONS = {
   image: (isLeft: boolean): Variants => ({
     initial: {
       opacity: 0,
-      scale: 1.3,
+      scale: 1.5,
       filter: 'blur(15px)',
-      rotate: isLeft ? -15 : 15,
-      x: isLeft ? -60 : 60,
+      rotate: isLeft ? -30 : 30,
+      x: isLeft ? -80 : 80,
     },
     animate: {
       opacity: 1,
@@ -142,8 +142,8 @@ const BackgroundGradient = ({ isLeft }: { isLeft: boolean }) => (
     <motion.div
       animate={{
         background: isLeft
-          ? 'radial-gradient(circle at 0% 50%, hsl(var(--primary) / 0.15), transparent 50%)'
-          : 'radial-gradient(circle at 100% 50%, hsl(var(--accent) / 0.15), transparent 50%)',
+          ? 'radial-gradient(circle at 20% 50%, hsl(var(--primary) / 0.15), transparent 50%)'
+          : 'radial-gradient(circle at 80% 50%, hsl(var(--accent) / 0.15), transparent 50%)',
       }}
       transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
       className="absolute inset-0"
@@ -187,25 +187,10 @@ const ProductVisual = ({ data, isLeft }: { data: SideData; isLeft: boolean }) =>
             key={data.id}
             src={data.image}
             alt={data.title}
-            initial={{ 
-              opacity: 0, 
-              scale: 1.5, 
-              rotate: isLeft ? -30 : 30,
-              x: isLeft ? -80 : 80 
-            }}
-            animate={{ 
-              opacity: 1, 
-              scale: 1, 
-              rotate: 0,
-              x: 0
-            }}
-            exit={{ 
-              opacity: 0, 
-              scale: 0.5, 
-              rotate: isLeft ? 30 : -30,
-              x: isLeft ? 80 : -80 
-            }}
-            transition={{ type: 'spring', stiffness: 200, damping: 25 }}
+            variants={ANIMATIONS.image(isLeft)}
+            initial="initial"
+            animate="animate"
+            exit="exit"
             className="w-3/4 h-3/4 object-contain drop-shadow-[0_20px_50px_rgba(0,0,0,0.3)]"
             draggable={false}
           />
@@ -355,7 +340,8 @@ export default function LegalAIShowcase() {
           </h3>
         </div>
 
-        <div className="flex flex-col lg:flex-row items-center justify-center gap-12 lg:gap-24">
+        {/* Content switches sides based on selection */}
+        <div className={`flex flex-col lg:flex-row items-center justify-center gap-12 lg:gap-24 ${!isLeft ? 'lg:flex-row-reverse' : ''}`}>
           {/* Visual */}
           <AnimatePresence mode="wait">
             <ProductVisual key={currentData.id} data={currentData} isLeft={isLeft} />

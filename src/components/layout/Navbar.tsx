@@ -54,13 +54,17 @@ const Navbar = () => {
 
           {/* CTA Button */}
           <div className="hidden md:flex items-center gap-3">
-            <Button variant="outline" size="sm" className="font-sans">
-              Sign In
-            </Button>
-            <Button size="sm" className="font-sans group">
-              Get Started
-              <ChevronRight className="w-4 h-4 ml-1 group-hover:translate-x-0.5 transition-transform" />
-            </Button>
+            <Link to="/auth">
+              <Button variant="outline" size="sm" className="font-sans">
+                Sign In
+              </Button>
+            </Link>
+            <Link to="/auth">
+              <Button size="sm" className="font-sans group">
+                Get Started
+                <ChevronRight className="w-4 h-4 ml-1 group-hover:translate-x-0.5 transition-transform" />
+              </Button>
+            </Link>
           </div>
 
           {/* Mobile Menu Button */}
@@ -92,12 +96,16 @@ const Navbar = () => {
                 </Link>
               ))}
               <div className="flex flex-col gap-2 mt-4 pt-4 border-t border-border">
-                <Button variant="outline" className="w-full font-sans">
-                  Sign In
-                </Button>
-                <Button className="w-full font-sans">
-                  Get Started
-                </Button>
+                <Link to="/auth" onClick={() => setIsOpen(false)}>
+                  <Button variant="outline" className="w-full font-sans">
+                    Sign In
+                  </Button>
+                </Link>
+                <Link to="/auth" onClick={() => setIsOpen(false)}>
+                  <Button className="w-full font-sans">
+                    Get Started
+                  </Button>
+                </Link>
               </div>
             </div>
           </div>
