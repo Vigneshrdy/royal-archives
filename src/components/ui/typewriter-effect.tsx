@@ -123,12 +123,11 @@ export const TypewriterEffectSmooth = ({
               {word.text.map((char, index) => (
                 <span
                   key={`char-${index}`}
-                  className={cn(`text-foreground`, word.className)}
+                  className={cn(word.className)}
                 >
                   {char}
                 </span>
               ))}
-              &nbsp;
             </span>
           );
         })}
@@ -139,18 +138,18 @@ export const TypewriterEffectSmooth = ({
   return (
     <div className={cn("flex space-x-1 my-6", className)}>
       <motion.div
-        className="overflow-hidden pb-2"
+        className="overflow-hidden"
         initial={{ width: "0%" }}
         whileInView={{ width: "fit-content" }}
         transition={{
-          duration: 2,
+          duration: 1.5,
           ease: "linear",
-          delay: 0.5,
+          delay: 0.3,
         }}
         viewport={{ once: true }}
       >
         <div
-          className="text-xs sm:text-base md:text-xl lg:text-3xl xl:text-5xl font-bold"
+          className="font-serif font-semibold"
           style={{ whiteSpace: "nowrap" }}
         >
           {renderWords()}
