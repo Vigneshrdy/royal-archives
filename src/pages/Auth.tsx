@@ -4,13 +4,18 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Scale, Mail, Lock, User, ArrowRight, Eye, EyeOff } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-
+import { ThemeToggle } from "@/components/ui/theme-toggle";
 const Auth = () => {
   const [isSignUp, setIsSignUp] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center p-4 md:p-8">
+    <div className="min-h-screen bg-background flex items-center justify-center p-4 md:p-8 transition-colors duration-300">
+      {/* Theme Toggle - Fixed position */}
+      <div className="fixed top-4 right-4 z-50">
+        <ThemeToggle />
+      </div>
+      
       <div className="w-full max-w-5xl">
         {/* Mobile Logo */}
         <div className="lg:hidden flex items-center justify-center gap-3 mb-8">
