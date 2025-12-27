@@ -11,40 +11,45 @@ interface TeamMember {
   role: string;
   description: string;
   image: string | null;
+  offsetDown?: boolean;
 }
 
 const teamMembers: TeamMember[] = [
   {
-    name: "Shoaib",
-    firstName: "SHOAIB",
+    name: "Shoaib SSM",
+    firstName: "SHOAIB SSM",
     role: "LEADING WITH VISION",
     description:
       "As Team Lead and Backend Developer, Shoaib drives the Nyaya AI project with expertise in architecture, model finetuning, and RAG implementation. His passion lies in making legal knowledge accessible to everyone through intelligent AI systems.",
     image: shoaibImg,
+    offsetDown: true,
   },
   {
     name: "Vignesh Reddy",
-    firstName: "VIGNESH",
+    firstName: "VIGNESH REDDY",
     role: "DEPLOYMENT EXCELLENCE",
     description:
       "Specializing in deployment pipelines, backend development, and AI model optimization. Vignesh ensures seamless integration of finetuned models and RAG systems for production-ready performance.",
     image: null,
+    offsetDown: false,
   },
   {
     name: "Jinal Thakkar",
-    firstName: "JINAL",
+    firstName: "JINAL THAKKAR",
     role: "CREATIVE DESIGN",
     description:
       "Crafting beautiful user experiences through thoughtful graphic design and modern frontend development. Jinal brings creative vision to life with pixel-perfect implementation and artistic flair.",
     image: jinalImg,
+    offsetDown: false,
   },
   {
     name: "Nidhi Shah",
-    firstName: "NIDHI",
+    firstName: "NIDHI SHAH",
     role: "VISUAL INNOVATION",
     description:
       "Combining artistic design sensibility with technical frontend expertise. Nidhi creates engaging visual interfaces that make complex legal information intuitive and accessible to all users.",
     image: nidhiImg,
+    offsetDown: false,
   },
 ];
 
@@ -55,9 +60,8 @@ const TeamMemberSection = ({ member }: { member: TeamMember }) => {
       <div className="flex flex-col md:hidden min-h-screen">
         {/* Title */}
         <div className="pt-20 pb-4 text-center z-[5]">
-          <h1 className="text-[28px] sm:text-[40px] font-extrabold tracking-[-1px] text-foreground leading-none">
-            <span className="block">KNOW</span>
-            <span className="block">{member.firstName}</span>
+          <h1 className="text-[24px] sm:text-[36px] font-extrabold tracking-[-1px] text-foreground leading-none">
+            {member.firstName}
           </h1>
         </div>
 
@@ -93,8 +97,8 @@ const TeamMemberSection = ({ member }: { member: TeamMember }) => {
       <div className="hidden md:block relative min-h-screen overflow-hidden">
         {/* TITLE */}
         <div className="absolute top-8 left-1/2 -translate-x-1/2 z-[5] pointer-events-none text-center">
-          <h1 className="text-[80px] lg:text-[120px] xl:text-[148px] font-extrabold tracking-[-5px] lg:tracking-[-7px] text-foreground leading-none whitespace-nowrap">
-            KNOW <span className="ml-6 lg:ml-9">{member.firstName}</span>
+          <h1 className="text-[60px] lg:text-[90px] xl:text-[110px] font-extrabold tracking-[-3px] lg:tracking-[-5px] text-foreground leading-none whitespace-nowrap">
+            {member.firstName}
           </h1>
         </div>
 
@@ -103,7 +107,7 @@ const TeamMemberSection = ({ member }: { member: TeamMember }) => {
           <img
             src={member.image}
             alt={member.name}
-            className="absolute bottom-0 left-1/2 -translate-x-1/2 h-[70vh] lg:h-[82vh] object-cover z-[3]"
+            className={`absolute left-1/2 -translate-x-1/2 h-[70vh] lg:h-[82vh] object-cover z-[3] ${member.offsetDown ? 'bottom-[-8vh]' : 'bottom-0'}`}
           />
         ) : (
           <div className="absolute bottom-0 left-1/2 -translate-x-1/2 h-[70vh] lg:h-[82vh] w-[350px] lg:w-[400px] bg-muted flex items-center justify-center z-[3] rounded-t-xl">
