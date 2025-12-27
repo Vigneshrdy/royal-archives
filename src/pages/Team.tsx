@@ -51,144 +51,148 @@ const teamMembers: TeamMember[] = [
   },
 ];
 
-const TeamMemberSection = ({
-  member,
-}: {
-  member: TeamMember;
-}) => {
+const TeamMemberSection = ({ member }: { member: TeamMember }) => {
   return (
-    <section className="relative min-h-screen bg-white dark:bg-background overflow-hidden">
+    <section 
+      className="relative min-h-screen overflow-hidden"
+      style={{ backgroundColor: "#ffffff" }}
+    >
       {/* Black Border Frame */}
-      <div className="absolute inset-4 md:inset-6 lg:inset-8 border-2 border-foreground/80 pointer-events-none z-50" />
+      <div 
+        className="absolute inset-3 md:inset-6 lg:inset-8 pointer-events-none z-50"
+        style={{ border: "2px solid #1a1a1a" }}
+      />
 
       {/* Large Headline - Top */}
-      <div className="pt-20 md:pt-24 lg:pt-28 px-4 md:px-8">
+      <div className="pt-16 md:pt-20 lg:pt-24 px-4 md:px-8">
         <motion.h2
           initial={{ opacity: 0, y: -20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="text-[13vw] md:text-[11vw] lg:text-[10vw] font-serif font-bold text-foreground tracking-tighter leading-[0.85] text-center"
+          className="text-[14vw] md:text-[12vw] lg:text-[11vw] font-serif font-bold tracking-tighter leading-[0.9] text-center"
+          style={{ color: "#1a1a1a" }}
         >
-          KNOW <span className="text-primary">{member.firstName}</span>
+          KNOW <span style={{ color: "#8B7355" }}>{member.firstName}</span>
         </motion.h2>
       </div>
 
-      {/* Main Content Area */}
-      <div className="relative h-[60vh] md:h-[65vh] mt-4 md:mt-0">
-        {/* Left Figure - Desktop only */}
+      {/* Content Container */}
+      <div className="relative" style={{ height: "calc(100vh - 250px)", minHeight: "500px" }}>
+        
+        {/* Left Figure */}
         <motion.div
-          initial={{ opacity: 0, x: -30 }}
+          initial={{ opacity: 0, x: -50 }}
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.7, delay: 0.3 }}
-          className="hidden md:block absolute left-0 bottom-0 w-40 lg:w-56 xl:w-64 z-20"
+          transition={{ duration: 0.8, delay: 0.2 }}
+          className="absolute left-0 bottom-0 z-20 w-[25vw] md:w-[20vw] lg:w-[18vw] max-w-[220px]"
         >
           <img
             src={lawyerLeft}
             alt=""
             className="w-full h-auto object-contain"
+            style={{ filter: "grayscale(100%)" }}
           />
         </motion.div>
 
-        {/* Right Figure - Desktop only */}
+        {/* Right Figure */}
         <motion.div
-          initial={{ opacity: 0, x: 30 }}
+          initial={{ opacity: 0, x: 50 }}
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.7, delay: 0.4 }}
-          className="hidden md:block absolute right-0 bottom-0 w-40 lg:w-56 xl:w-64 z-20"
+          transition={{ duration: 0.8, delay: 0.3 }}
+          className="absolute right-0 bottom-0 z-20 w-[25vw] md:w-[20vw] lg:w-[18vw] max-w-[220px]"
         >
           <img
             src={lawyerRight}
             alt=""
             className="w-full h-auto object-contain"
+            style={{ filter: "grayscale(100%)" }}
           />
         </motion.div>
 
-        {/* Center Photo - Overlapping headline */}
+        {/* Center Photo */}
         <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          whileInView={{ opacity: 1, scale: 1 }}
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.7, delay: 0.2 }}
-          className="absolute left-1/2 -translate-x-1/2 md:left-1/2 md:-translate-x-1/2 bottom-0 z-30 w-[70%] md:w-[40%] lg:w-[35%] max-w-sm"
+          transition={{ duration: 0.8, delay: 0.1 }}
+          className="absolute left-1/2 -translate-x-1/2 bottom-0 z-30"
+          style={{ width: "clamp(200px, 35vw, 380px)" }}
         >
           {member.image ? (
             <img
               src={member.image}
               alt={member.name}
               className="w-full h-auto object-cover object-top"
-              style={{ maxHeight: "55vh" }}
+              style={{ 
+                maxHeight: "60vh",
+                filter: "grayscale(100%)"
+              }}
             />
           ) : (
             <div
-              className="w-full bg-gradient-to-b from-muted to-muted/70 flex items-end justify-center rounded-t-lg"
-              style={{ height: "50vh" }}
+              className="w-full flex items-end justify-center"
+              style={{ 
+                height: "50vh",
+                background: "linear-gradient(to bottom, #e5e5e5, #cccccc)"
+              }}
             >
               <div className="text-center pb-16">
-                <div className="w-20 h-20 md:w-28 md:h-28 mx-auto mb-3 rounded-full bg-primary/30 flex items-center justify-center">
-                  <span className="text-4xl md:text-5xl font-serif font-bold text-primary">
+                <div 
+                  className="w-24 h-24 md:w-32 md:h-32 mx-auto mb-4 rounded-full flex items-center justify-center"
+                  style={{ backgroundColor: "rgba(139, 115, 85, 0.3)" }}
+                >
+                  <span 
+                    className="text-5xl md:text-6xl font-serif font-bold"
+                    style={{ color: "#8B7355" }}
+                  >
                     {member.firstName.charAt(0)}
                   </span>
                 </div>
-                <p className="text-muted-foreground text-xs md:text-sm">Photo coming soon</p>
+                <p style={{ color: "#666666", fontSize: "14px" }}>Photo coming soon</p>
               </div>
             </div>
           )}
         </motion.div>
 
-        {/* Text Block - Right Side (Desktop) / Below (Mobile) */}
+        {/* Text Block - Right Side */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0, x: 20 }}
+          whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.7, delay: 0.5 }}
-          className="absolute right-6 md:right-[12%] lg:right-[15%] top-[30%] md:top-[35%] z-40 max-w-[45%] md:max-w-xs text-right"
+          transition={{ duration: 0.8, delay: 0.4 }}
+          className="absolute z-40 text-right"
+          style={{
+            right: "clamp(60px, 12vw, 180px)",
+            top: "35%",
+            maxWidth: "min(280px, 30vw)"
+          }}
         >
-          <h3 className="text-sm md:text-lg lg:text-xl font-serif font-bold text-foreground mb-2 tracking-wide">
+          <h3 
+            className="text-base md:text-xl lg:text-2xl font-serif font-bold mb-3 tracking-wide"
+            style={{ color: "#1a1a1a" }}
+          >
             {member.role}
           </h3>
-          <p className="text-[10px] md:text-xs lg:text-sm text-muted-foreground leading-relaxed hidden md:block">
+          <p 
+            className="text-xs md:text-sm leading-relaxed hidden md:block"
+            style={{ color: "#555555" }}
+          >
             {member.description}
           </p>
         </motion.div>
       </div>
 
-      {/* Mobile: Side figures and description */}
-      <div className="md:hidden relative px-4 pb-8">
-        {/* Mobile figures row */}
-        <div className="flex justify-between items-end -mt-20 mb-6">
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
-            className="w-24"
-          >
-            <img src={lawyerLeft} alt="" className="w-full h-auto" />
-          </motion.div>
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
-            className="w-24"
-          >
-            <img src={lawyerRight} alt="" className="w-full h-auto" />
-          </motion.div>
-        </div>
-
-        {/* Mobile description */}
-        <motion.p
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5, delay: 0.3 }}
-          className="text-xs text-muted-foreground leading-relaxed text-center max-w-xs mx-auto"
+      {/* Mobile Description */}
+      <div className="md:hidden px-6 pb-8 pt-4" style={{ backgroundColor: "#ffffff" }}>
+        <p 
+          className="text-xs leading-relaxed text-center max-w-sm mx-auto"
+          style={{ color: "#555555" }}
         >
           {member.description}
-        </motion.p>
+        </p>
       </div>
     </section>
   );
@@ -196,33 +200,39 @@ const TeamMemberSection = ({
 
 const Team = () => {
   return (
-    <div className="min-h-screen bg-white dark:bg-background transition-colors duration-300">
+    <div className="min-h-screen bg-background transition-colors duration-300">
       <Navbar />
 
       {/* Intro Section */}
-      <section className="pt-24 pb-4 px-6 bg-white dark:bg-background">
+      <section className="pt-24 pb-6 px-6" style={{ backgroundColor: "#ffffff" }}>
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
           className="container mx-auto text-center"
         >
-          <span className="inline-block px-4 py-1.5 text-xs font-medium bg-primary/10 text-primary rounded-full mb-3 tracking-widest">
+          <span 
+            className="inline-block px-4 py-1.5 text-xs font-medium rounded-full mb-3 tracking-widest"
+            style={{ backgroundColor: "rgba(139, 115, 85, 0.15)", color: "#8B7355" }}
+          >
             KMIT • 2ND YEAR
           </span>
-          <h1 className="text-2xl md:text-3xl lg:text-4xl font-serif font-bold text-foreground">
-            Meet The <span className="text-primary">Innovators</span>
+          <h1 
+            className="text-2xl md:text-3xl lg:text-4xl font-serif font-bold"
+            style={{ color: "#1a1a1a" }}
+          >
+            Meet The <span style={{ color: "#8B7355" }}>Innovators</span>
           </h1>
         </motion.div>
       </section>
 
       {/* Team Members */}
-      {teamMembers.map((member, index) => (
+      {teamMembers.map((member) => (
         <TeamMemberSection key={member.name} member={member} />
       ))}
 
       {/* Quote Section */}
-      <section className="py-16 px-6 bg-muted/10">
+      <section className="py-16 px-6" style={{ backgroundColor: "#f8f8f8" }}>
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           whileInView={{ opacity: 1, scale: 1 }}
@@ -230,12 +240,15 @@ const Team = () => {
           transition={{ duration: 0.8 }}
           className="container mx-auto text-center max-w-2xl"
         >
-          <blockquote className="text-lg md:text-xl lg:text-2xl font-serif text-foreground leading-relaxed">
+          <blockquote 
+            className="text-lg md:text-xl lg:text-2xl font-serif leading-relaxed"
+            style={{ color: "#1a1a1a" }}
+          >
             "Innovation happens when{" "}
-            <span className="text-primary font-semibold">passion</span> meets{" "}
-            <span className="text-primary font-semibold">purpose</span>."
+            <span className="font-semibold" style={{ color: "#8B7355" }}>passion</span> meets{" "}
+            <span className="font-semibold" style={{ color: "#8B7355" }}>purpose</span>."
           </blockquote>
-          <p className="mt-3 text-muted-foreground text-sm">
+          <p className="mt-3 text-sm" style={{ color: "#666666" }}>
             — The Nyaya AI Team
           </p>
         </motion.div>
