@@ -51,62 +51,65 @@ const teamMembers: TeamMember[] = [
 const TeamMemberSection = ({ member }: { member: TeamMember }) => {
   return (
     <section className="relative w-full min-h-screen overflow-hidden bg-background">
-      {/* TITLE — CUTS THROUGH FACE */}
-      <h1 className="absolute top-4 sm:top-6 md:top-8 left-1/2 -translate-x-1/2 text-[32px] sm:text-[48px] md:text-[80px] lg:text-[120px] xl:text-[148px] font-extrabold tracking-[-2px] sm:tracking-[-3px] md:tracking-[-5px] lg:tracking-[-7px] z-[5] whitespace-nowrap pointer-events-none text-foreground">
-        KNOW <span className="ml-2 sm:ml-3 md:ml-6 lg:ml-9">{member.firstName}</span>
-      </h1>
+      {/* TITLE — Stacked on mobile, inline on larger screens */}
+      <div className="absolute top-16 sm:top-6 md:top-8 left-1/2 -translate-x-1/2 z-[5] pointer-events-none text-center">
+        <h1 className="text-[28px] sm:text-[48px] md:text-[80px] lg:text-[120px] xl:text-[148px] font-extrabold tracking-[-1px] sm:tracking-[-3px] md:tracking-[-5px] lg:tracking-[-7px] text-foreground leading-none">
+          <span className="block sm:inline">KNOW</span>
+          <span className="block sm:inline sm:ml-3 md:ml-6 lg:ml-9">{member.firstName}</span>
+        </h1>
+      </div>
 
       {/* CENTER PORTRAIT */}
       {member.image ? (
         <img
           src={member.image}
           alt={member.name}
-          className="absolute bottom-0 left-1/2 -translate-x-1/2 h-[55vh] sm:h-[60vh] md:h-[70vh] lg:h-[82vh] object-cover z-[3]"
+          className="absolute bottom-0 left-1/2 -translate-x-1/2 h-[50vh] sm:h-[60vh] md:h-[70vh] lg:h-[82vh] object-cover z-[3]"
         />
       ) : (
-        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 h-[55vh] sm:h-[60vh] md:h-[70vh] lg:h-[82vh] w-[200px] sm:w-[250px] md:w-[350px] lg:w-[400px] bg-muted flex items-center justify-center z-[3]">
-          <span className="text-[80px] sm:text-[100px] md:text-[120px] font-extrabold text-muted-foreground">
+        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 h-[50vh] sm:h-[60vh] md:h-[70vh] lg:h-[82vh] w-[180px] sm:w-[250px] md:w-[350px] lg:w-[400px] bg-muted flex items-center justify-center z-[3] rounded-t-xl">
+          <span className="text-[60px] sm:text-[100px] md:text-[120px] font-extrabold text-muted-foreground/50">
             {member.firstName.charAt(0)}
           </span>
         </div>
       )}
 
-      {/* LEFT PORTRAIT - GRAYSCALE (hidden on small mobile) */}
+      {/* LEFT PORTRAIT - GRAYSCALE (hidden on mobile) */}
       {member.image ? (
         <img
           src={member.image}
           alt={`${member.name} left`}
-          className="hidden sm:block absolute bottom-0 -left-5 sm:-left-8 md:-left-10 h-[35vh] sm:h-[40vh] md:h-[50vh] lg:h-[60vh] object-cover grayscale z-[2]"
+          className="hidden md:block absolute bottom-0 -left-8 lg:-left-10 h-[50vh] lg:h-[60vh] object-cover grayscale z-[2]"
         />
       ) : (
-        <div className="hidden sm:flex absolute bottom-0 -left-5 sm:-left-8 md:-left-10 h-[35vh] sm:h-[40vh] md:h-[50vh] lg:h-[60vh] w-[120px] sm:w-[150px] md:w-[200px] lg:w-[250px] bg-muted/70 items-center justify-center z-[2]">
-          <span className="text-[50px] sm:text-[60px] md:text-[80px] font-extrabold text-muted-foreground">
+        <div className="hidden md:flex absolute bottom-0 -left-8 lg:-left-10 h-[50vh] lg:h-[60vh] w-[180px] lg:w-[250px] bg-muted/50 items-center justify-center z-[2] rounded-t-xl">
+          <span className="text-[60px] lg:text-[80px] font-extrabold text-muted-foreground/30">
             {member.firstName.charAt(0)}
           </span>
         </div>
       )}
 
-      {/* RIGHT PORTRAIT - GRAYSCALE (hidden on small mobile) */}
+      {/* RIGHT PORTRAIT - GRAYSCALE (hidden on mobile) */}
       {member.image ? (
         <img
           src={member.image}
           alt={`${member.name} right`}
-          className="hidden sm:block absolute bottom-0 -right-5 sm:-right-8 md:-right-10 h-[35vh] sm:h-[40vh] md:h-[50vh] lg:h-[60vh] object-cover grayscale z-[2]"
+          className="hidden md:block absolute bottom-0 -right-8 lg:-right-10 h-[50vh] lg:h-[60vh] object-cover grayscale z-[2]"
         />
       ) : (
-        <div className="hidden sm:flex absolute bottom-0 -right-5 sm:-right-8 md:-right-10 h-[35vh] sm:h-[40vh] md:h-[50vh] lg:h-[60vh] w-[120px] sm:w-[150px] md:w-[200px] lg:w-[250px] bg-muted/70 items-center justify-center z-[2]">
-          <span className="text-[50px] sm:text-[60px] md:text-[80px] font-extrabold text-muted-foreground">
+        <div className="hidden md:flex absolute bottom-0 -right-8 lg:-right-10 h-[50vh] lg:h-[60vh] w-[180px] lg:w-[250px] bg-muted/50 items-center justify-center z-[2] rounded-t-xl">
+          <span className="text-[60px] lg:text-[80px] font-extrabold text-muted-foreground/30">
             {member.firstName.charAt(0)}
           </span>
         </div>
       )}
 
       {/* TEXT BLOCK - Bottom on mobile, right side on larger screens */}
-      <div className="absolute bottom-4 left-4 right-4 sm:bottom-auto sm:left-auto sm:right-4 md:right-20 lg:right-36 sm:top-1/2 sm:-translate-y-1/2 w-auto sm:w-48 md:w-64 lg:w-72 z-[6] bg-background/80 sm:bg-transparent p-4 sm:p-0 rounded-lg sm:rounded-none backdrop-blur-sm sm:backdrop-blur-none">
-        <h2 className="text-[10px] sm:text-xs md:text-sm tracking-[1px] sm:tracking-[1.4px] mb-2 sm:mb-3 font-semibold text-foreground">
+      <div className="absolute bottom-4 left-4 right-4 md:bottom-auto md:left-auto md:right-12 lg:right-36 md:top-1/2 md:-translate-y-1/2 w-auto md:w-56 lg:w-72 z-[6] bg-background/90 md:bg-transparent p-4 md:p-0 rounded-lg md:rounded-none backdrop-blur-sm md:backdrop-blur-none">
+        <h2 className="text-[11px] md:text-sm tracking-[1px] md:tracking-[1.4px] mb-2 md:mb-3 font-semibold text-foreground">
           {member.role}
         </h2>
-        <p className="text-[10px] sm:text-xs md:text-[13px] leading-relaxed text-muted-foreground">
+        <p className="text-[11px] md:text-[13px] leading-relaxed text-muted-foreground">
           {member.description}
         </p>
       </div>
