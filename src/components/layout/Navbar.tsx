@@ -2,7 +2,7 @@ import { Link, useLocation } from "react-router-dom";
 import { useState } from "react";
 import { Menu, X, Scale, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
-
+import { ThemeToggle } from "@/components/ui/theme-toggle";
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
@@ -52,8 +52,9 @@ const Navbar = () => {
             ))}
           </div>
 
-          {/* CTA Button */}
-          <div className="hidden md:flex items-center gap-3">
+          {/* CTA Button & Theme Toggle */}
+          <div className="hidden md:flex items-center gap-4">
+            <ThemeToggle />
             <Link to="/auth">
               <Button variant="outline" size="sm" className="font-sans">
                 Sign In
@@ -95,7 +96,11 @@ const Navbar = () => {
                   {link.label}
                 </Link>
               ))}
-              <div className="flex flex-col gap-2 mt-4 pt-4 border-t border-border">
+              <div className="flex flex-col gap-3 mt-4 pt-4 border-t border-border">
+                <div className="flex items-center justify-between px-4">
+                  <span className="text-sm text-muted-foreground font-sans">Theme</span>
+                  <ThemeToggle />
+                </div>
                 <Link to="/auth" onClick={() => setIsOpen(false)}>
                   <Button variant="outline" className="w-full font-sans">
                     Sign In
