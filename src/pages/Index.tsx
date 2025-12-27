@@ -7,6 +7,7 @@ import FeaturesSection from "@/components/home/FeaturesSection";
 import AudienceSection from "@/components/home/AudienceSection";
 import VisionSection from "@/components/home/VisionSection";
 import CTASection from "@/components/home/CTASection";
+import LegalAIShowcase from "@/components/ui/legal-ai-showcase";
 
 const Index = () => (
   <div className="min-h-screen bg-background">
@@ -14,6 +15,7 @@ const Index = () => (
     <main>
       <HeroSection />
       <ProblemSection />
+      <LegalAIShowcase />
       <SolutionSection />
       <FeaturesSection />
       <AudienceSection />
