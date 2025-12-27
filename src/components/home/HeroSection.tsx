@@ -34,24 +34,24 @@ const HeroSection = () => {
           </div>
 
           {/* Main Headline with Typewriter Effect */}
-          <div className="font-serif text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-semibold text-primary leading-tight mb-6 animate-fade-in-up opacity-0 stagger-1">
-            <div className="flex items-center justify-center flex-wrap gap-x-4">
+          <h1 className="font-serif text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-semibold text-primary leading-tight mb-6 animate-fade-in-up opacity-0 stagger-1">
+            <span className="flex items-baseline justify-center flex-wrap gap-x-3">
               <span>Justice,</span>
               <TypewriterEffectSmooth 
                 words={explainedWords} 
-                className="inline-flex !my-0" 
-                cursorClassName="!h-8 sm:!h-10 md:!h-12 lg:!h-14 bg-gold"
+                className="inline-flex !my-0 !space-x-0" 
+                cursorClassName="!h-8 sm:!h-10 md:!h-12 lg:!h-14 !bg-gold"
               />
-            </div>
-            <div className="flex items-center justify-center flex-wrap gap-x-4">
+            </span>
+            <span className="flex items-baseline justify-center flex-wrap gap-x-3">
               <span>Law,</span>
               <TypewriterEffectSmooth 
                 words={simplifiedWords} 
-                className="inline-flex !my-0" 
-                cursorClassName="!h-8 sm:!h-10 md:!h-12 lg:!h-14 bg-gold"
+                className="inline-flex !my-0 !space-x-0" 
+                cursorClassName="!h-8 sm:!h-10 md:!h-12 lg:!h-14 !bg-gold"
               />
-            </div>
-          </div>
+            </span>
+          </h1>
 
           {/* Tagline */}
           <p className="text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto mb-4 animate-fade-in-up opacity-0 stagger-2">
