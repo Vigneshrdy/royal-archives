@@ -7,6 +7,7 @@ import FeaturesSection from "@/components/home/FeaturesSection";
 import AudienceSection from "@/components/home/AudienceSection";
 import VisionSection from "@/components/home/VisionSection";
 import CTASection from "@/components/home/CTASection";
+import LegalAIShowcase from "@/components/ui/legal-ai-showcase";
 
 const Index = () => {
   return (
@@ -14,6 +15,7 @@ const Index = () => {
       <Navbar />
       <main>
         <HeroSection />
+        <LegalAIShowcase />
         <ProblemSection />
         <SolutionSection />
         <FeaturesSection />

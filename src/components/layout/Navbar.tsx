@@ -1,6 +1,6 @@
 import { Link, useLocation } from "react-router-dom";
 import { useState } from "react";
-import { Menu, X, Scale, BookOpen, MessageSquare, Users, ChevronRight } from "lucide-react";
+import { Menu, X, Scale, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const Navbar = () => {
@@ -17,7 +17,7 @@ const Navbar = () => {
   const isActive = (path: string) => location.pathname === path;
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-border">
+    <header className="fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-md border-b border-border">
       <nav className="container mx-auto px-6 py-4">
         <div className="flex items-center justify-between">
           {/* Logo */}
@@ -29,7 +29,7 @@ const Navbar = () => {
               <span className="font-serif text-xl font-semibold text-primary tracking-wide">
                 Nyaya AI
               </span>
-              <span className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground -mt-0.5">
+              <span className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground -mt-0.5 font-sans">
                 Legal Intelligence
               </span>
             </div>
@@ -41,7 +41,7 @@ const Navbar = () => {
               <Link
                 key={link.href}
                 to={link.href}
-                className={`px-4 py-2 text-sm font-medium transition-colors rounded-md ${
+                className={`px-4 py-2 text-sm font-medium transition-colors rounded-md font-sans ${
                   isActive(link.href)
                     ? "text-primary bg-secondary"
                     : "text-muted-foreground hover:text-foreground hover:bg-secondary/50"
@@ -82,7 +82,7 @@ const Navbar = () => {
                   key={link.href}
                   to={link.href}
                   onClick={() => setIsOpen(false)}
-                  className={`px-4 py-3 text-sm font-medium transition-colors rounded-md ${
+                  className={`px-4 py-3 text-sm font-medium transition-colors rounded-md font-sans ${
                     isActive(link.href)
                       ? "text-primary bg-secondary"
                       : "text-muted-foreground hover:text-foreground hover:bg-secondary/50"
