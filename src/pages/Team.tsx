@@ -50,9 +50,9 @@ const teamMembers: TeamMember[] = [
 
 const TeamMemberSection = ({ member }: { member: TeamMember }) => {
   return (
-    <section className="relative w-full h-screen overflow-hidden bg-white">
+    <section className="relative w-full h-screen overflow-hidden bg-background">
       {/* TITLE — CUTS THROUGH FACE */}
-      <h1 className="absolute top-8 left-1/2 -translate-x-1/2 text-[60px] md:text-[100px] lg:text-[148px] font-extrabold tracking-[-4px] md:tracking-[-7px] z-[5] whitespace-nowrap pointer-events-none text-black">
+      <h1 className="absolute top-8 left-1/2 -translate-x-1/2 text-[60px] md:text-[100px] lg:text-[148px] font-extrabold tracking-[-4px] md:tracking-[-7px] z-[5] whitespace-nowrap pointer-events-none text-foreground">
         KNOW <span className="ml-4 md:ml-9">{member.firstName}</span>
       </h1>
 
@@ -64,8 +64,8 @@ const TeamMemberSection = ({ member }: { member: TeamMember }) => {
           className="absolute bottom-0 left-1/2 -translate-x-1/2 h-[70vh] md:h-[82vh] object-cover z-[3]"
         />
       ) : (
-        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 h-[70vh] md:h-[82vh] w-[300px] md:w-[400px] bg-gray-200 flex items-center justify-center z-[3]">
-          <span className="text-[120px] font-extrabold text-gray-400">
+        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 h-[70vh] md:h-[82vh] w-[300px] md:w-[400px] bg-muted flex items-center justify-center z-[3]">
+          <span className="text-[120px] font-extrabold text-muted-foreground">
             {member.firstName.charAt(0)}
           </span>
         </div>
@@ -79,8 +79,8 @@ const TeamMemberSection = ({ member }: { member: TeamMember }) => {
           className="absolute bottom-0 -left-10 h-[50vh] md:h-[60vh] object-cover grayscale z-[2]"
         />
       ) : (
-        <div className="absolute bottom-0 -left-10 h-[50vh] md:h-[60vh] w-[200px] md:w-[250px] bg-gray-300 flex items-center justify-center z-[2]">
-          <span className="text-[80px] font-extrabold text-gray-400">
+        <div className="absolute bottom-0 -left-10 h-[50vh] md:h-[60vh] w-[200px] md:w-[250px] bg-muted/70 flex items-center justify-center z-[2]">
+          <span className="text-[80px] font-extrabold text-muted-foreground">
             {member.firstName.charAt(0)}
           </span>
         </div>
@@ -94,8 +94,8 @@ const TeamMemberSection = ({ member }: { member: TeamMember }) => {
           className="absolute bottom-0 -right-10 h-[50vh] md:h-[60vh] object-cover grayscale z-[2]"
         />
       ) : (
-        <div className="absolute bottom-0 -right-10 h-[50vh] md:h-[60vh] w-[200px] md:w-[250px] bg-gray-300 flex items-center justify-center z-[2]">
-          <span className="text-[80px] font-extrabold text-gray-400">
+        <div className="absolute bottom-0 -right-10 h-[50vh] md:h-[60vh] w-[200px] md:w-[250px] bg-muted/70 flex items-center justify-center z-[2]">
+          <span className="text-[80px] font-extrabold text-muted-foreground">
             {member.firstName.charAt(0)}
           </span>
         </div>
@@ -103,10 +103,10 @@ const TeamMemberSection = ({ member }: { member: TeamMember }) => {
 
       {/* TEXT BLOCK */}
       <div className="absolute right-4 md:right-36 top-1/2 -translate-y-1/2 w-64 md:w-72 z-[6]">
-        <h2 className="text-xs md:text-sm tracking-[1.4px] mb-3 font-semibold text-black">
+        <h2 className="text-xs md:text-sm tracking-[1.4px] mb-3 font-semibold text-foreground">
           {member.role}
         </h2>
-        <p className="text-xs md:text-[13px] leading-relaxed text-[#2b2b2b]">
+        <p className="text-xs md:text-[13px] leading-relaxed text-muted-foreground">
           {member.description}
         </p>
       </div>
@@ -116,7 +116,7 @@ const TeamMemberSection = ({ member }: { member: TeamMember }) => {
 
 const Team = () => {
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-background">
       <Navbar />
       
       {teamMembers.map((member) => (
