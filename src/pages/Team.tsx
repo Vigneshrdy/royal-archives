@@ -52,7 +52,7 @@ const teamMembers: TeamMember[] = [
 const TeamMemberSection = ({ member }: { member: TeamMember }) => {
   return (
     <section className="relative min-h-screen overflow-hidden bg-background">
-      {/* Desktop Layout */}
+      {/* Desktop Layout - Single photo left, description right */}
       <div className="hidden md:flex relative h-screen flex-col">
         {/* Large Name Title at Top */}
         <div className="pt-20 lg:pt-24 px-4 text-center relative z-10">
@@ -68,57 +68,24 @@ const TeamMemberSection = ({ member }: { member: TeamMember }) => {
           </motion.h1>
         </div>
 
-        {/* Images Container - overlapping with title */}
-        <div className="relative flex-1 flex items-end justify-center -mt-32 lg:-mt-48">
-          {/* Left Side Image */}
+        {/* Content Container - Photo left, Description right */}
+        <div className="relative flex-1 flex items-stretch -mt-16 lg:-mt-24">
+          {/* Left Side - Single Photo */}
           <motion.div
             initial={{ opacity: 0, x: -50 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.7, delay: 0.2 }}
-            className="absolute left-4 lg:left-12 bottom-0 z-10"
-            style={{ width: "20vw", maxWidth: "240px" }}
-          >
-            {member.image ? (
-              <img
-                src={member.image}
-                alt={`${member.name} left`}
-                className="w-full h-auto object-contain opacity-70"
-                style={{ maxHeight: "45vh" }}
-              />
-            ) : (
-              <div 
-                className="w-full bg-muted/50 flex items-center justify-center"
-                style={{ height: "35vh" }}
-              >
-                <span className="text-5xl font-serif font-bold text-primary/30">
-                  {member.firstName.charAt(0)}
-                </span>
-              </div>
-            )}
-          </motion.div>
-
-          {/* Center Main Image - 2x larger, touching title */}
-          <motion.div
-            initial={{ opacity: 0, y: 50 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
             transition={{ duration: 0.7, delay: 0.1 }}
-            className="relative z-20"
-            style={{ width: "50vw", maxWidth: "600px" }}
+            className="w-1/2 flex items-end justify-center pl-8 lg:pl-16"
           >
             {member.image ? (
               <img
                 src={member.image}
                 alt={member.name}
-                className="w-full h-auto object-contain"
-                style={{ maxHeight: "85vh" }}
+                className="w-auto h-full object-contain max-h-[75vh]"
               />
             ) : (
-              <div 
-                className="w-full bg-muted flex items-center justify-center rounded-t-2xl"
-                style={{ height: "70vh" }}
-              >
+              <div className="w-64 h-[60vh] bg-muted flex items-center justify-center rounded-t-2xl">
                 <div className="text-center">
                   <div className="w-32 h-32 mx-auto mb-4 rounded-full bg-primary/20 flex items-center justify-center">
                     <span className="text-6xl font-serif font-bold text-primary">
@@ -131,53 +98,25 @@ const TeamMemberSection = ({ member }: { member: TeamMember }) => {
             )}
           </motion.div>
 
-          {/* Right Side Image */}
+          {/* Right Side - Description (bigger text) */}
           <motion.div
             initial={{ opacity: 0, x: 50 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.7, delay: 0.3 }}
-            className="absolute right-4 lg:right-12 bottom-0 z-10"
-            style={{ width: "20vw", maxWidth: "240px" }}
+            transition={{ duration: 0.7, delay: 0.2 }}
+            className="w-1/2 flex flex-col justify-center pr-8 lg:pr-24 text-right"
           >
-            {member.image ? (
-              <img
-                src={member.image}
-                alt={`${member.name} right`}
-                className="w-full h-auto object-contain opacity-70"
-                style={{ maxHeight: "45vh" }}
-              />
-            ) : (
-              <div 
-                className="w-full bg-muted/50 flex items-center justify-center"
-                style={{ height: "35vh" }}
-              >
-                <span className="text-5xl font-serif font-bold text-primary/30">
-                  {member.firstName.charAt(0)}
-                </span>
-              </div>
-            )}
-          </motion.div>
-
-          {/* Text Block - Top Right */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.7, delay: 0.4 }}
-            className="absolute top-0 right-8 lg:right-24 z-30 text-right max-w-[200px] lg:max-w-[280px]"
-          >
-            <h2 className="text-base lg:text-xl font-serif font-bold text-foreground mb-3 tracking-wide uppercase">
+            <h2 className="text-xl lg:text-3xl font-serif font-bold text-foreground mb-6 tracking-wide uppercase">
               {member.role}
             </h2>
-            <p className="text-xs lg:text-sm text-muted-foreground leading-relaxed">
+            <p className="text-base lg:text-xl text-muted-foreground leading-relaxed">
               {member.description}
             </p>
           </motion.div>
         </div>
       </div>
 
-      {/* Mobile Layout - Name → Photo → Description (top to bottom) */}
+      {/* Mobile Layout - Name → Photo → Description (top to bottom, no gap) */}
       <div className="md:hidden flex flex-col min-h-screen">
         {/* Name at Top */}
         <div className="pt-20 px-4 text-center">
@@ -191,18 +130,18 @@ const TeamMemberSection = ({ member }: { member: TeamMember }) => {
             <span className="text-foreground">KNOW </span>
             <span className="text-primary">{member.firstName}</span>
           </motion.h1>
-          <h2 className="text-xs font-serif font-bold text-foreground mt-2 tracking-wide uppercase">
+          <h2 className="text-xs font-serif font-bold text-foreground mt-1 tracking-wide uppercase">
             {member.role}
           </h2>
         </div>
 
-        {/* Photo in Middle - no gap */}
+        {/* Photo - no gap */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6, delay: 0.1 }}
-          className="flex-1 flex items-center justify-center px-4"
+          className="flex-1 flex items-center justify-center"
         >
           {member.image ? (
             <img
