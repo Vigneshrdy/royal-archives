@@ -162,87 +162,99 @@ const HelmetReveal = () => {
 
     const loadModels = async () => {
       try {
-        // Load head model
-        const headGltf = await loader.loadAsync("https://threejs.org/examples/models/gltf/LeePerrySmith/LeePerrySmith.glb");
-        const head = headGltf.scene.children[0] as THREE.Mesh;
-        head.geometry.rotateY(Math.PI * 0.01);
-        head.material = new THREE.MeshMatcapMaterial({ color: 0xffffff });
-        scene.add(head);
+        // Load Lady Justice model
+        const justiceGltf = await loader.loadAsync("https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/main/2.0/Suzanne/glTF/Suzanne.gltf");
+        const justiceModel = justiceGltf.scene;
+        
+        // Apply reveal material to all meshes
+        justiceModel.traverse((child) => {
+          if ((child as THREE.Mesh).isMesh) {
+            const mesh = child as THREE.Mesh;
+            const material = new THREE.MeshStandardMaterial({ 
+              color: 0xd4af37, // Gold color for Lady Justice
+              metalness: 0.8,
+              roughness: 0.2,
+            });
+            
+            material.onBeforeCompile = (shader) => {
+              shader.uniforms.texBlob = { value: blob.rtOutput.texture };
+              shader.vertexShader = `
+                varying vec4 vPosProj;
+                ${shader.vertexShader}
+              `.replace(
+                `#include <project_vertex>`,
+                `#include <project_vertex>
+                  vPosProj = gl_Position;
+                `
+              );
+              shader.fragmentShader = `
+                uniform sampler2D texBlob;
+                varying vec4 vPosProj;
+                ${shader.fragmentShader}
+              `.replace(
+                `#include <clipping_planes_fragment>`,
+                `
+                vec2 blobUV = ((vPosProj.xy / vPosProj.w) + 1.) * 0.5;
+                vec4 blobData = texture(texBlob, blobUV);
+                if (blobData.r < 0.01) discard;
+                #include <clipping_planes_fragment>
+                `
+              );
+            };
+            
+            mesh.material = material;
+          }
+        });
+        
+        justiceModel.scale.setScalar(2.5);
+        justiceModel.position.set(0, 1, 0);
+        scene.add(justiceModel);
 
-        // Load helmet model
-        const helmetGltf = await loader.loadAsync("https://threejs.org/examples/models/gltf/DamagedHelmet/glTF/DamagedHelmet.gltf");
-        const helmet = helmetGltf.scene.children[0] as THREE.Mesh;
-        
-        const helmetMaterial = helmet.material as THREE.MeshStandardMaterial;
-        helmetMaterial.onBeforeCompile = (shader) => {
-          shader.uniforms.texBlob = { value: blob.rtOutput.texture };
-          shader.vertexShader = `
-            varying vec4 vPosProj;
-            ${shader.vertexShader}
-          `.replace(
-            `#include <project_vertex>`,
-            `#include <project_vertex>
-              vPosProj = gl_Position;
-            `
-          );
-          shader.fragmentShader = `
-            uniform sampler2D texBlob;
-            varying vec4 vPosProj;
-            ${shader.fragmentShader}
-          `.replace(
-            `#include <clipping_planes_fragment>`,
-            `
-            vec2 blobUV = ((vPosProj.xy / vPosProj.w) + 1.) * 0.5;
-            vec4 blobData = texture(texBlob, blobUV);
-            if (blobData.r < 0.01) discard;
-            #include <clipping_planes_fragment>
-            `
-          );
-        };
-        
-        helmet.scale.setScalar(3.5);
-        helmet.position.set(0, 1.5, 0.75);
-        scene.add(helmet);
-
-        // Create wireframe helmet
-        const helmetWire = new THREE.Mesh(
-          helmet.geometry.clone().rotateX(Math.PI * 0.5),
-          new THREE.MeshBasicMaterial({
-            color: 0x000000,
-            wireframe: true,
-            transparent: true,
-            opacity: 0.25,
-          })
-        );
-        
-        (helmetWire.material as THREE.MeshBasicMaterial).onBeforeCompile = (shader) => {
-          shader.uniforms.time = gu.time;
-          shader.vertexShader = `
-            varying float vYVal;
-            ${shader.vertexShader}
-          `.replace(
-            `#include <begin_vertex>`,
-            `#include <begin_vertex>
-              vYVal = position.y;
-            `
-          );
-          shader.fragmentShader = `
-            uniform float time;
-            varying float vYVal;
-            ${shader.fragmentShader}
-          `.replace(
-            `#include <color_fragment>`,
-            `#include <color_fragment>
-              float y = fract(vYVal * 0.25 + time * 0.5);
-              float fY = smoothstep(0., 0.01, y) - smoothstep(0.02, 0.1, y);
-              diffuseColor.a *= fY * 0.9 + 0.1;
-            `
-          );
-        };
-        
-        helmetWire.scale.setScalar(3.5);
-        helmetWire.position.set(0, 1.5, 0.75);
-        scene.add(helmetWire);
+        // Create wireframe overlay
+        justiceModel.traverse((child) => {
+          if ((child as THREE.Mesh).isMesh) {
+            const mesh = child as THREE.Mesh;
+            const wireframe = new THREE.Mesh(
+              mesh.geometry.clone(),
+              new THREE.MeshBasicMaterial({
+                color: 0x000000,
+                wireframe: true,
+                transparent: true,
+                opacity: 0.25,
+              })
+            );
+            
+            (wireframe.material as THREE.MeshBasicMaterial).onBeforeCompile = (shader) => {
+              shader.uniforms.time = gu.time;
+              shader.vertexShader = `
+                varying float vYVal;
+                ${shader.vertexShader}
+              `.replace(
+                `#include <begin_vertex>`,
+                `#include <begin_vertex>
+                  vYVal = position.y;
+                `
+              );
+              shader.fragmentShader = `
+                uniform float time;
+                varying float vYVal;
+                ${shader.fragmentShader}
+              `.replace(
+                `#include <color_fragment>`,
+                `#include <color_fragment>
+                  float y = fract(vYVal * 0.25 + time * 0.5);
+                  float fY = smoothstep(0., 0.01, y) - smoothstep(0.02, 0.1, y);
+                  diffuseColor.a *= fY * 0.9 + 0.1;
+                `
+              );
+            };
+            
+            wireframe.scale.copy(justiceModel.scale);
+            wireframe.position.copy(justiceModel.position);
+            wireframe.rotation.copy(justiceModel.rotation);
+            scene.add(wireframe);
+          }
+        });
 
         // Animation loop
         const animate = () => {
@@ -290,8 +302,8 @@ const HelmetReveal = () => {
       </div>
       
       <div className="absolute bottom-6 left-6 z-10 text-foreground">
-        <h1 className="font-serif text-2xl font-bold mb-1">Helmet Reveal</h1>
-        <p className="text-muted-foreground text-sm">Move your cursor to reveal the helmet</p>
+        <h1 className="font-serif text-2xl font-bold mb-1">Lady Justice Reveal</h1>
+        <p className="text-muted-foreground text-sm">Move your cursor to reveal Lady Justice</p>
       </div>
     </div>
   );
