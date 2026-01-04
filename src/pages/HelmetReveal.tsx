@@ -124,12 +124,13 @@ const HelmetReveal = () => {
 
     // Scene setup
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0xffffff);
+    scene.background = null;
     
     const camera = new THREE.PerspectiveCamera(30, window.innerWidth / window.innerHeight, 1, 100);
     camera.position.set(-1, 0, 0).setLength(15);
     
-    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    renderer.setClearColor(0x000000, 0);
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setPixelRatio(window.devicePixelRatio);
     container.appendChild(renderer.domElement);
@@ -150,8 +151,12 @@ const HelmetReveal = () => {
     controls.object.position.add(camShift);
     controls.target.add(camShift);
 
-    const light = new THREE.AmbientLight(0xffffff, Math.PI);
-    scene.add(light);
+    const ambientLight = new THREE.AmbientLight(0xffffff, Math.PI);
+    scene.add(ambientLight);
+    
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 2);
+    directionalLight.position.set(5, 5, 5);
+    scene.add(directionalLight);
 
     const blob = new Blob(renderer);
     const loader = new GLTFLoader();
@@ -162,12 +167,77 @@ const HelmetReveal = () => {
 
     const loadModels = async () => {
       try {
-        // Load head model
-        const headGltf = await loader.loadAsync("https://threejs.org/examples/models/gltf/LeePerrySmith/LeePerrySmith.glb");
-        const head = headGltf.scene.children[0] as THREE.Mesh;
-        head.geometry.rotateY(Math.PI * 0.01);
-        head.material = new THREE.MeshMatcapMaterial({ color: 0xffffff });
-        scene.add(head);
+        // Create a scales of justice symbol using Three.js geometry
+        const justiceGroup = new THREE.Group();
+        
+        // Central pillar
+        const pillarGeometry = new THREE.CylinderGeometry(0.08, 0.12, 2.5, 16);
+        const goldMaterial = new THREE.MeshStandardMaterial({
+          color: 0xd4af37,
+          metalness: 0.9,
+          roughness: 0.15,
+        });
+        const pillar = new THREE.Mesh(pillarGeometry, goldMaterial);
+        pillar.position.y = 1.25;
+        justiceGroup.add(pillar);
+        
+        // Base
+        const baseGeometry = new THREE.CylinderGeometry(0.6, 0.7, 0.2, 32);
+        const base = new THREE.Mesh(baseGeometry, goldMaterial);
+        justiceGroup.add(base);
+        
+        // Crossbar
+        const crossbarGeometry = new THREE.BoxGeometry(2.5, 0.08, 0.08);
+        const crossbar = new THREE.Mesh(crossbarGeometry, goldMaterial);
+        crossbar.position.y = 2.5;
+        justiceGroup.add(crossbar);
+        
+        // Top ornament (sphere)
+        const topOrnamentGeometry = new THREE.SphereGeometry(0.15, 16, 16);
+        const topOrnament = new THREE.Mesh(topOrnamentGeometry, goldMaterial);
+        topOrnament.position.y = 2.7;
+        justiceGroup.add(topOrnament);
+        
+        // Create scale pans (bowls)
+        const createScalePan = (xPos: number) => {
+          const panGroup = new THREE.Group();
+          
+          // Chain links
+          const chainMaterial = goldMaterial.clone();
+          for (let i = 0; i < 4; i++) {
+            const linkGeometry = new THREE.TorusGeometry(0.03, 0.01, 8, 16);
+            const link = new THREE.Mesh(linkGeometry, chainMaterial);
+            link.position.y = 2.3 - i * 0.15;
+            link.rotation.x = i % 2 === 0 ? 0 : Math.PI / 2;
+            panGroup.add(link);
+          }
+          
+          // Pan (bowl shape)
+          const panGeometry = new THREE.SphereGeometry(0.35, 32, 16, 0, Math.PI * 2, 0, Math.PI / 2);
+          const pan = new THREE.Mesh(panGeometry, goldMaterial);
+          pan.rotation.x = Math.PI;
+          pan.position.y = 1.7;
+          panGroup.add(pan);
+          
+          // Pan rim
+          const rimGeometry = new THREE.TorusGeometry(0.35, 0.02, 8, 32);
+          const rim = new THREE.Mesh(rimGeometry, goldMaterial);
+          rim.rotation.x = Math.PI / 2;
+          rim.position.y = 1.7;
+          panGroup.add(rim);
+          
+          panGroup.position.x = xPos;
+          return panGroup;
+        };
+        
+        justiceGroup.add(createScalePan(-1.1));
+        justiceGroup.add(createScalePan(1.1));
+        
+        // Position and scale the justice symbol
+        justiceGroup.scale.setScalar(0.7);
+        justiceGroup.position.set(0, 0, 0);
+        
+        scene.add(justiceGroup);
 
         // Load helmet model
         const helmetGltf = await loader.loadAsync("https://threejs.org/examples/models/gltf/DamagedHelmet/glTF/DamagedHelmet.gltf");
@@ -276,7 +346,7 @@ const HelmetReveal = () => {
   }, []);
 
   return (
-    <div className="relative w-full h-screen overflow-hidden">
+    <div className="relative w-full h-screen overflow-hidden bg-background">
       <div ref={containerRef} className="w-full h-full" />
       
       {/* Overlay UI */}
@@ -290,8 +360,8 @@ const HelmetReveal = () => {
       </div>
       
       <div className="absolute bottom-6 left-6 z-10 text-foreground">
-        <h1 className="font-serif text-2xl font-bold mb-1">Helmet Reveal</h1>
-        <p className="text-muted-foreground text-sm">Move your cursor to reveal the helmet</p>
+        <h1 className="font-serif text-2xl font-bold mb-1">Justice Revealed</h1>
+        <p className="text-muted-foreground text-sm">Move your cursor to reveal the scales of justice</p>
       </div>
     </div>
   );
