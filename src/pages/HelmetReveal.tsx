@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
@@ -6,7 +6,6 @@ import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 const HelmetReveal = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     if (!containerRef.current) return;
@@ -123,14 +122,14 @@ const HelmetReveal = () => {
       }
     }
 
-    // Scene setup with transparent background
+    // Scene setup
     const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0xffffff);
     
     const camera = new THREE.PerspectiveCamera(30, window.innerWidth / window.innerHeight, 1, 100);
     camera.position.set(-1, 0, 0).setLength(15);
     
-    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-    renderer.setClearColor(0x000000, 0);
+    const renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setPixelRatio(window.devicePixelRatio);
     container.appendChild(renderer.domElement);
@@ -154,10 +153,6 @@ const HelmetReveal = () => {
     const light = new THREE.AmbientLight(0xffffff, Math.PI);
     scene.add(light);
 
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 2);
-    directionalLight.position.set(5, 5, 5);
-    scene.add(directionalLight);
-
     const blob = new Blob(renderer);
     const loader = new GLTFLoader();
 
@@ -167,6 +162,13 @@ const HelmetReveal = () => {
 
     const loadModels = async () => {
       try {
+        // Load head model
+        const headGltf = await loader.loadAsync("https://threejs.org/examples/models/gltf/LeePerrySmith/LeePerrySmith.glb");
+        const head = headGltf.scene.children[0] as THREE.Mesh;
+        head.geometry.rotateY(Math.PI * 0.01);
+        head.material = new THREE.MeshMatcapMaterial({ color: 0xffffff });
+        scene.add(head);
+
         // Load helmet model
         const helmetGltf = await loader.loadAsync("https://threejs.org/examples/models/gltf/DamagedHelmet/glTF/DamagedHelmet.gltf");
         const helmet = helmetGltf.scene.children[0] as THREE.Mesh;
@@ -242,8 +244,6 @@ const HelmetReveal = () => {
         helmetWire.position.set(0, 1.5, 0.75);
         scene.add(helmetWire);
 
-        setIsLoading(false);
-
         // Animation loop
         const animate = () => {
           animationId = requestAnimationFrame(animate);
@@ -259,7 +259,6 @@ const HelmetReveal = () => {
         animate();
       } catch (error) {
         console.error("Error loading models:", error);
-        setIsLoading(false);
       }
     };
 
@@ -278,34 +277,11 @@ const HelmetReveal = () => {
 
   return (
     <div className="relative w-full h-screen overflow-hidden">
-      {/* Lady Justice Sketchfab model as background */}
-      <iframe
-        title="Lady Justice Sculpture"
-        className="absolute inset-0 w-full h-full border-0"
-        src="https://sketchfab.com/models/3f0a0054b1714a8490f37c58dc847a01/embed?autostart=1&internal=1&tracking=0&ui_ar=0&ui_infos=0&ui_snapshots=1&ui_stop=0&ui_theatre=1&ui_watermark=0&ui_controls=0"
-        allow="autoplay; fullscreen; xr-spatial-tracking"
-      />
-      
-      {/* Three.js helmet overlay */}
-      <div 
-        ref={containerRef} 
-        className="absolute inset-0 w-full h-full pointer-events-auto" 
-        style={{ zIndex: 10 }}
-      />
-
-      {/* Loading indicator */}
-      {isLoading && (
-        <div className="absolute inset-0 flex items-center justify-center z-30 bg-background/80">
-          <div className="flex flex-col items-center gap-4">
-            <div className="w-12 h-12 border-4 border-primary/30 border-t-primary rounded-full animate-spin" />
-            <p className="text-muted-foreground">Loading 3D Models...</p>
-          </div>
-        </div>
-      )}
+      <div ref={containerRef} className="w-full h-full" />
       
       {/* Overlay UI */}
-      <div className="absolute top-6 left-6 z-20">
-        <a href="/" className="flex items-center gap-2 text-foreground bg-background/80 backdrop-blur-sm px-3 py-2 rounded-lg hover:bg-background/90 transition-colors">
+      <div className="absolute top-6 left-6 z-10">
+        <a href="/" className="flex items-center gap-2 text-foreground hover:opacity-80 transition-opacity">
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
           </svg>
@@ -313,9 +289,9 @@ const HelmetReveal = () => {
         </a>
       </div>
       
-      <div className="absolute bottom-6 left-6 z-20 bg-background/80 backdrop-blur-sm p-4 rounded-lg">
-        <h1 className="font-serif text-2xl font-bold mb-1 text-foreground">Lady Justice Vision</h1>
-        <p className="text-muted-foreground text-sm">Move your cursor to reveal the helmet overlay</p>
+      <div className="absolute bottom-6 left-6 z-10 text-foreground">
+        <h1 className="font-serif text-2xl font-bold mb-1">Helmet Reveal</h1>
+        <p className="text-muted-foreground text-sm">Move your cursor to reveal the helmet</p>
       </div>
     </div>
   );
