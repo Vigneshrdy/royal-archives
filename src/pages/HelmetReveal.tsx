@@ -55,7 +55,7 @@ const HelmetReveal = () => {
         renderer.domElement.addEventListener("pointerleave", handlePointerLeave);
 
         const material = new THREE.MeshBasicMaterial({
-          color: 0x213448, // Royal blue from design system
+          color: 0x000000,
         });
 
         material.onBeforeCompile = (shader) => {
@@ -122,9 +122,9 @@ const HelmetReveal = () => {
       }
     }
 
-    // Scene setup with parchment-inspired background
+    // Scene setup
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0xf7f4ef);
+    scene.background = new THREE.Color(0xffffff);
     
     const camera = new THREE.PerspectiveCamera(30, window.innerWidth / window.innerHeight, 1, 100);
     camera.position.set(-1, 0, 0).setLength(15);
@@ -150,14 +150,8 @@ const HelmetReveal = () => {
     controls.object.position.add(camShift);
     controls.target.add(camShift);
 
-    // Warm ambient light for legal/library atmosphere
-    const ambientLight = new THREE.AmbientLight(0xfff5e6, Math.PI * 0.6);
-    scene.add(ambientLight);
-    
-    // Add directional light with warm tone
-    const directionalLight = new THREE.DirectionalLight(0xffecd2, Math.PI * 0.8);
-    directionalLight.position.set(5, 10, 7);
-    scene.add(directionalLight);
+    const light = new THREE.AmbientLight(0xffffff, Math.PI);
+    scene.add(light);
 
     const blob = new Blob(renderer);
     const loader = new GLTFLoader();
@@ -168,22 +162,18 @@ const HelmetReveal = () => {
 
     const loadModels = async () => {
       try {
-        // Load head model with classical statue aesthetic
+        // Load head model
         const headGltf = await loader.loadAsync("https://threejs.org/examples/models/gltf/LeePerrySmith/LeePerrySmith.glb");
         const head = headGltf.scene.children[0] as THREE.Mesh;
         head.geometry.rotateY(Math.PI * 0.01);
-        head.material = new THREE.MeshMatcapMaterial({ color: 0xf5f0e8 });
+        head.material = new THREE.MeshMatcapMaterial({ color: 0xffffff });
         scene.add(head);
 
-        // Load helmet model with gold/bronze legal aesthetic
+        // Load helmet model
         const helmetGltf = await loader.loadAsync("https://threejs.org/examples/models/gltf/DamagedHelmet/glTF/DamagedHelmet.gltf");
         const helmet = helmetGltf.scene.children[0] as THREE.Mesh;
         
         const helmetMaterial = helmet.material as THREE.MeshStandardMaterial;
-        helmetMaterial.color = new THREE.Color(0xc9a55c);
-        helmetMaterial.metalness = 0.8;
-        helmetMaterial.roughness = 0.3;
-        
         helmetMaterial.onBeforeCompile = (shader) => {
           shader.uniforms.texBlob = { value: blob.rtOutput.texture };
           shader.vertexShader = `
@@ -214,14 +204,14 @@ const HelmetReveal = () => {
         helmet.position.set(0, 1.5, 0.75);
         scene.add(helmet);
 
-        // Create wireframe helmet with gold accent
+        // Create wireframe helmet
         const helmetWire = new THREE.Mesh(
           helmet.geometry.clone().rotateX(Math.PI * 0.5),
           new THREE.MeshBasicMaterial({
-            color: 0xc9a55c,
+            color: 0x000000,
             wireframe: true,
             transparent: true,
-            opacity: 0.35,
+            opacity: 0.25,
           })
         );
         
@@ -254,6 +244,7 @@ const HelmetReveal = () => {
         helmetWire.position.set(0, 1.5, 0.75);
         scene.add(helmetWire);
 
+        // Animation loop
         const animate = () => {
           animationId = requestAnimationFrame(animate);
           const dt = clock.getDelta();
@@ -285,51 +276,23 @@ const HelmetReveal = () => {
   }, []);
 
   return (
-    <div className="relative w-full h-screen overflow-hidden bg-background">
+    <div className="relative w-full h-screen overflow-hidden">
       <div ref={containerRef} className="w-full h-full" />
       
-      {/* Parchment texture overlay */}
-      <div className="absolute inset-0 pointer-events-none parchment-texture opacity-50" />
-      
-      {/* Back button with legal theme */}
+      {/* Overlay UI */}
       <div className="absolute top-6 left-6 z-10">
-        <a 
-          href="/" 
-          className="flex items-center gap-3 px-4 py-2 rounded-lg bg-card/80 backdrop-blur-sm border border-border shadow-book text-foreground hover:bg-card transition-colors"
-        >
+        <a href="/" className="flex items-center gap-2 text-foreground hover:opacity-80 transition-opacity">
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
           </svg>
-          <span className="font-serif font-medium">Return to Nyaya AI</span>
+          <span className="font-medium">Back</span>
         </a>
       </div>
       
-      {/* Legal-themed content panel */}
-      <div className="absolute bottom-8 left-8 z-10 max-w-md">
-        <div className="bg-card/90 backdrop-blur-sm rounded-lg p-6 border border-border shadow-elevated">
-          <div className="flex items-center gap-3 mb-3">
-            <div className="w-10 h-10 rounded-full bg-accent/20 flex items-center justify-center">
-              <svg className="w-5 h-5 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3" />
-              </svg>
-            </div>
-            <h1 className="font-serif text-2xl font-semibold text-foreground">Justice Revealed</h1>
-          </div>
-          <p className="text-muted-foreground leading-relaxed font-sans">
-            Move your cursor across the screen to unveil the face of justice. 
-            Like the law itself, truth is revealed through careful examination.
-          </p>
-          <div className="mt-4 pt-4 border-t border-border">
-            <p className="text-sm text-muted-foreground italic font-serif">
-              "Justice is truth in action." — Benjamin Disraeli
-            </p>
-          </div>
-        </div>
+      <div className="absolute bottom-6 left-6 z-10 text-foreground">
+        <h1 className="font-serif text-2xl font-bold mb-1">Helmet Reveal</h1>
+        <p className="text-muted-foreground text-sm">Move your cursor to reveal the helmet</p>
       </div>
-      
-      {/* Decorative corner ornaments */}
-      <div className="absolute top-4 right-4 w-16 h-16 border-t-2 border-r-2 border-accent/30 rounded-tr-lg" />
-      <div className="absolute bottom-4 right-4 w-16 h-16 border-b-2 border-r-2 border-accent/30 rounded-br-lg" />
     </div>
   );
 };
