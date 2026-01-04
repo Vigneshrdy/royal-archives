@@ -12,6 +12,7 @@ const Navbar = () => {
     { href: "/about", label: "About" },
     { href: "/features", label: "Features" },
     { href: "/team", label: "Team" },
+    { href: "/showcase", label: "Showcase" },
     { href: "/chat", label: "Ask Nyaya" },
   ];
 
