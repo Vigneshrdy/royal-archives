@@ -1,335 +1,240 @@
-import { useEffect, useRef } from "react";
-import * as THREE from "three";
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
-import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
+import { useEffect, useRef, useState } from "react";
+import { motion } from "framer-motion";
+import legalHeritage from "@/assets/legal-heritage.jpg";
+import legalFuture from "@/assets/legal-future.jpg";
 
 const HelmetReveal = () => {
   const containerRef = useRef<HTMLDivElement>(null);
-  const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [isHovering, setIsHovering] = useState(false);
+  const [revealSize, setRevealSize] = useState(0);
 
   useEffect(() => {
-    if (!containerRef.current) return;
+    const handleMouseMove = (e: MouseEvent) => {
+      if (!containerRef.current) return;
+      const rect = containerRef.current.getBoundingClientRect();
+      setMousePosition({
+        x: e.clientX - rect.left,
+        y: e.clientY - rect.top,
+      });
+    };
 
     const container = containerRef.current;
-
-    const gu = {
-      time: { value: 0 },
-      dTime: { value: 0 },
-      aspect: { value: window.innerWidth / window.innerHeight }
-    };
-
-    class Blob {
-      renderer: THREE.WebGLRenderer;
-      fbTexture: { value: THREE.FramebufferTexture };
-      rtOutput: THREE.WebGLRenderTarget;
-      uniforms: {
-        pointer: { value: THREE.Vector2 };
-        pointerDown: { value: number };
-        pointerRadius: { value: number };
-        pointerDuration: { value: number };
-      };
-      rtScene: THREE.Mesh;
-      rtCamera: THREE.Camera;
-
-      constructor(renderer: THREE.WebGLRenderer) {
-        this.renderer = renderer;
-        this.fbTexture = { value: new THREE.FramebufferTexture(window.innerWidth, window.innerHeight) };
-        this.rtOutput = new THREE.WebGLRenderTarget(window.innerWidth, window.innerHeight);
-        this.uniforms = {
-          pointer: { value: new THREE.Vector2().setScalar(10) },
-          pointerDown: { value: 1 },
-          pointerRadius: { value: 0.375 },
-          pointerDuration: { value: 2.5 }
-        };
-
-        const handlePointerMove = (event: PointerEvent) => {
-          this.uniforms.pointer.value.x = (event.clientX / window.innerWidth) * 2 - 1;
-          this.uniforms.pointer.value.y = -(event.clientY / window.innerHeight) * 2 + 1;
-        };
-
-        const handlePointerLeave = () => {
-          this.uniforms.pointer.value.setScalar(10);
-        };
-
-        window.addEventListener("pointermove", handlePointerMove);
-        renderer.domElement.addEventListener("pointerleave", handlePointerLeave);
-
-        const material = new THREE.MeshBasicMaterial({
-          color: 0x213448, // Royal blue from design system
-        });
-
-        material.onBeforeCompile = (shader) => {
-          shader.uniforms.dTime = gu.dTime;
-          shader.uniforms.aspect = gu.aspect;
-          shader.uniforms.pointer = this.uniforms.pointer;
-          shader.uniforms.pointerDown = this.uniforms.pointerDown;
-          shader.uniforms.pointerRadius = this.uniforms.pointerRadius;
-          shader.uniforms.pointerDuration = this.uniforms.pointerDuration;
-          shader.uniforms.fbTexture = this.fbTexture;
-          shader.fragmentShader = `
-            uniform float dTime;
-            uniform float aspect;
-            uniform vec2 pointer;
-            uniform float pointerDown;
-            uniform float pointerRadius;
-            uniform float pointerDuration;
-            uniform sampler2D fbTexture;
-            
-            ${shader.fragmentShader}
-          `.replace(
-            `#include <color_fragment>`,
-            `#include <color_fragment>
-            
-            float duration = pointerDuration;
-            
-            float rVal = texture2D(fbTexture, vUv).r;
-            
-            rVal -= clamp(dTime / duration, 0., 0.1);
-            rVal = clamp(rVal, 0., 1.);
-            
-            float f = 0.;
-            if (pointerDown > 0.5){
-              vec2 uv = (vUv - 0.5) * 2. * vec2(aspect, 1.);
-              vec2 mouse = pointer * vec2(aspect, 1);
-              
-              f = 1. - smoothstep(pointerRadius * 0.1, pointerRadius, distance(uv, mouse));
-            }
-            rVal += f * 0.1;
-            rVal = clamp(rVal, 0., 1.);
-            diffuseColor.rgb = vec3(rVal);
-            `
-          );
-        };
-
-        material.defines = { "USE_UV": "" };
-
-        this.rtScene = new THREE.Mesh(
-          new THREE.PlaneGeometry(2, 2),
-          material
-        );
-        this.rtCamera = new THREE.Camera();
-      }
-
-      render() {
-        this.renderer.setRenderTarget(this.rtOutput);
-        this.renderer.render(this.rtScene, this.rtCamera);
-        this.renderer.copyFramebufferToTexture(this.fbTexture.value);
-        this.renderer.setRenderTarget(null);
-      }
-
-      setSize(w: number, h: number) {
-        this.rtOutput.setSize(w, h);
-      }
+    if (container) {
+      container.addEventListener("mousemove", handleMouseMove);
+      container.addEventListener("mouseenter", () => setIsHovering(true));
+      container.addEventListener("mouseleave", () => setIsHovering(false));
     }
 
-    // Scene setup with parchment-inspired background
-    const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0xf7f4ef);
-    
-    const camera = new THREE.PerspectiveCamera(30, window.innerWidth / window.innerHeight, 1, 100);
-    camera.position.set(-1, 0, 0).setLength(15);
-    
-    const renderer = new THREE.WebGLRenderer({ antialias: true });
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setPixelRatio(window.devicePixelRatio);
-    container.appendChild(renderer.domElement);
-    rendererRef.current = renderer;
-
-    const handleResize = () => {
-      camera.aspect = window.innerWidth / window.innerHeight;
-      camera.updateProjectionMatrix();
-      renderer.setSize(window.innerWidth, window.innerHeight);
-      gu.aspect.value = camera.aspect;
-    };
-
-    window.addEventListener("resize", handleResize);
-
-    const camShift = new THREE.Vector3(0, 1, 0);
-    const controls = new OrbitControls(camera, renderer.domElement);
-    controls.enableDamping = true;
-    controls.object.position.add(camShift);
-    controls.target.add(camShift);
-
-    // Warm ambient light for legal/library atmosphere
-    const ambientLight = new THREE.AmbientLight(0xfff5e6, Math.PI * 0.6);
-    scene.add(ambientLight);
-    
-    // Add directional light with warm tone
-    const directionalLight = new THREE.DirectionalLight(0xffecd2, Math.PI * 0.8);
-    directionalLight.position.set(5, 10, 7);
-    scene.add(directionalLight);
-
-    const blob = new Blob(renderer);
-    const loader = new GLTFLoader();
-
-    const clock = new THREE.Clock();
-    let t = 0;
-    let animationId: number;
-
-    const loadModels = async () => {
-      try {
-        // Load head model with classical statue aesthetic
-        const headGltf = await loader.loadAsync("https://threejs.org/examples/models/gltf/LeePerrySmith/LeePerrySmith.glb");
-        const head = headGltf.scene.children[0] as THREE.Mesh;
-        head.geometry.rotateY(Math.PI * 0.01);
-        head.material = new THREE.MeshMatcapMaterial({ color: 0xf5f0e8 });
-        scene.add(head);
-
-        // Load helmet model with gold/bronze legal aesthetic
-        const helmetGltf = await loader.loadAsync("https://threejs.org/examples/models/gltf/DamagedHelmet/glTF/DamagedHelmet.gltf");
-        const helmet = helmetGltf.scene.children[0] as THREE.Mesh;
-        
-        const helmetMaterial = helmet.material as THREE.MeshStandardMaterial;
-        helmetMaterial.color = new THREE.Color(0xc9a55c);
-        helmetMaterial.metalness = 0.8;
-        helmetMaterial.roughness = 0.3;
-        
-        helmetMaterial.onBeforeCompile = (shader) => {
-          shader.uniforms.texBlob = { value: blob.rtOutput.texture };
-          shader.vertexShader = `
-            varying vec4 vPosProj;
-            ${shader.vertexShader}
-          `.replace(
-            `#include <project_vertex>`,
-            `#include <project_vertex>
-              vPosProj = gl_Position;
-            `
-          );
-          shader.fragmentShader = `
-            uniform sampler2D texBlob;
-            varying vec4 vPosProj;
-            ${shader.fragmentShader}
-          `.replace(
-            `#include <clipping_planes_fragment>`,
-            `
-            vec2 blobUV = ((vPosProj.xy / vPosProj.w) + 1.) * 0.5;
-            vec4 blobData = texture(texBlob, blobUV);
-            if (blobData.r < 0.01) discard;
-            #include <clipping_planes_fragment>
-            `
-          );
-        };
-        
-        helmet.scale.setScalar(3.5);
-        helmet.position.set(0, 1.5, 0.75);
-        scene.add(helmet);
-
-        // Create wireframe helmet with gold accent
-        const helmetWire = new THREE.Mesh(
-          helmet.geometry.clone().rotateX(Math.PI * 0.5),
-          new THREE.MeshBasicMaterial({
-            color: 0xc9a55c,
-            wireframe: true,
-            transparent: true,
-            opacity: 0.35,
-          })
-        );
-        
-        (helmetWire.material as THREE.MeshBasicMaterial).onBeforeCompile = (shader) => {
-          shader.uniforms.time = gu.time;
-          shader.vertexShader = `
-            varying float vYVal;
-            ${shader.vertexShader}
-          `.replace(
-            `#include <begin_vertex>`,
-            `#include <begin_vertex>
-              vYVal = position.y;
-            `
-          );
-          shader.fragmentShader = `
-            uniform float time;
-            varying float vYVal;
-            ${shader.fragmentShader}
-          `.replace(
-            `#include <color_fragment>`,
-            `#include <color_fragment>
-              float y = fract(vYVal * 0.25 + time * 0.5);
-              float fY = smoothstep(0., 0.01, y) - smoothstep(0.02, 0.1, y);
-              diffuseColor.a *= fY * 0.9 + 0.1;
-            `
-          );
-        };
-        
-        helmetWire.scale.setScalar(3.5);
-        helmetWire.position.set(0, 1.5, 0.75);
-        scene.add(helmetWire);
-
-        const animate = () => {
-          animationId = requestAnimationFrame(animate);
-          const dt = clock.getDelta();
-          t += dt;
-          gu.time.value = t;
-          gu.dTime.value = dt;
-          controls.update();
-          blob.render();
-          renderer.render(scene, camera);
-        };
-
-        animate();
-      } catch (error) {
-        console.error("Error loading models:", error);
-      }
-    };
-
-    loadModels();
-
     return () => {
-      window.removeEventListener("resize", handleResize);
-      cancelAnimationFrame(animationId);
-      renderer.dispose();
-      controls.dispose();
-      if (container.contains(renderer.domElement)) {
-        container.removeChild(renderer.domElement);
+      if (container) {
+        container.removeEventListener("mousemove", handleMouseMove);
+        container.removeEventListener("mouseenter", () => setIsHovering(true));
+        container.removeEventListener("mouseleave", () => setIsHovering(false));
       }
     };
   }, []);
 
+  useEffect(() => {
+    if (isHovering) {
+      const interval = setInterval(() => {
+        setRevealSize((prev) => Math.min(prev + 8, 300));
+      }, 16);
+      return () => clearInterval(interval);
+    } else {
+      const interval = setInterval(() => {
+        setRevealSize((prev) => Math.max(prev - 12, 0));
+      }, 16);
+      return () => clearInterval(interval);
+    }
+  }, [isHovering]);
+
   return (
-    <div className="relative w-full h-screen overflow-hidden bg-background">
-      <div ref={containerRef} className="w-full h-full" />
-      
-      {/* Parchment texture overlay */}
-      <div className="absolute inset-0 pointer-events-none parchment-texture opacity-50" />
-      
-      {/* Back button with legal theme */}
-      <div className="absolute top-6 left-6 z-10">
-        <a 
-          href="/" 
-          className="flex items-center gap-3 px-4 py-2 rounded-lg bg-card/80 backdrop-blur-sm border border-border shadow-book text-foreground hover:bg-card transition-colors"
-        >
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-          </svg>
-          <span className="font-serif font-medium">Return to Nyaya AI</span>
-        </a>
-      </div>
-      
-      {/* Legal-themed content panel */}
-      <div className="absolute bottom-8 left-8 z-10 max-w-md">
-        <div className="bg-card/90 backdrop-blur-sm rounded-lg p-6 border border-border shadow-elevated">
-          <div className="flex items-center gap-3 mb-3">
-            <div className="w-10 h-10 rounded-full bg-accent/20 flex items-center justify-center">
-              <svg className="w-5 h-5 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <div className="min-h-screen bg-background">
+      {/* Header */}
+      <div className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-sm border-b border-border">
+        <div className="container mx-auto px-6 py-4 flex items-center justify-between">
+          <a 
+            href="/" 
+            className="flex items-center gap-3 text-foreground hover:text-accent transition-colors"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
+            <span className="font-serif font-medium">Back to Nyaya AI</span>
+          </a>
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 rounded-full bg-accent/20 flex items-center justify-center">
+              <svg className="w-4 h-4 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3" />
               </svg>
             </div>
-            <h1 className="font-serif text-2xl font-semibold text-foreground">Justice Revealed</h1>
-          </div>
-          <p className="text-muted-foreground leading-relaxed font-sans">
-            Move your cursor across the screen to unveil the face of justice. 
-            Like the law itself, truth is revealed through careful examination.
-          </p>
-          <div className="mt-4 pt-4 border-t border-border">
-            <p className="text-sm text-muted-foreground italic font-serif">
-              "Justice is truth in action." — Benjamin Disraeli
-            </p>
+            <span className="font-serif text-lg font-semibold text-foreground">Legal Vision</span>
           </div>
         </div>
       </div>
-      
-      {/* Decorative corner ornaments */}
-      <div className="absolute top-4 right-4 w-16 h-16 border-t-2 border-r-2 border-accent/30 rounded-tr-lg" />
-      <div className="absolute bottom-4 right-4 w-16 h-16 border-b-2 border-r-2 border-accent/30 rounded-br-lg" />
+
+      {/* Main Interactive Area */}
+      <div 
+        ref={containerRef}
+        className="relative w-full h-screen overflow-hidden cursor-none pt-16"
+      >
+        {/* Base Layer - Traditional Legal */}
+        <div className="absolute inset-0">
+          <img 
+            src={legalHeritage} 
+            alt="Traditional Legal Heritage" 
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-background/20 via-transparent to-background/60" />
+        </div>
+
+        {/* Reveal Layer - AI Future */}
+        <div 
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            clipPath: `circle(${revealSize}px at ${mousePosition.x}px ${mousePosition.y}px)`,
+          }}
+        >
+          <img 
+            src={legalFuture} 
+            alt="AI-Powered Legal Future" 
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-primary/10 via-transparent to-primary/30" />
+        </div>
+
+        {/* Cursor Glow Effect */}
+        {isHovering && (
+          <div 
+            className="absolute pointer-events-none z-20"
+            style={{
+              left: mousePosition.x - 150,
+              top: mousePosition.y - 150,
+              width: 300,
+              height: 300,
+            }}
+          >
+            <div className="w-full h-full rounded-full bg-accent/20 blur-3xl animate-pulse" />
+          </div>
+        )}
+
+        {/* Custom Cursor */}
+        {isHovering && (
+          <motion.div 
+            className="absolute pointer-events-none z-30"
+            style={{
+              left: mousePosition.x - 30,
+              top: mousePosition.y - 30,
+            }}
+            animate={{ scale: [1, 1.1, 1] }}
+            transition={{ duration: 1, repeat: Infinity }}
+          >
+            <div className="w-[60px] h-[60px] rounded-full border-2 border-accent/60 flex items-center justify-center">
+              <div className="w-3 h-3 rounded-full bg-accent" />
+            </div>
+          </motion.div>
+        )}
+
+        {/* Parchment texture overlay */}
+        <div className="absolute inset-0 pointer-events-none parchment-texture opacity-30" />
+
+        {/* Content Overlay */}
+        <div className="absolute inset-0 flex flex-col justify-between pointer-events-none">
+          {/* Top Section */}
+          <div className="pt-24 px-8">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
+              className="max-w-2xl"
+            >
+              <h1 className="font-serif text-5xl md:text-7xl font-bold text-white drop-shadow-2xl mb-4">
+                The Evolution of
+                <span className="block text-accent">Legal Intelligence</span>
+              </h1>
+            </motion.div>
+          </div>
+
+          {/* Bottom Info Panel */}
+          <div className="p-8">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.5 }}
+              className="flex flex-col md:flex-row gap-8 items-end justify-between"
+            >
+              {/* Left Card */}
+              <div className="pointer-events-auto bg-card/90 backdrop-blur-md rounded-xl p-6 border border-border shadow-elevated max-w-md">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-12 h-12 rounded-lg bg-leather/20 flex items-center justify-center">
+                    <svg className="w-6 h-6 text-leather" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                    </svg>
+                  </div>
+                  <div>
+                    <h3 className="font-serif text-lg font-semibold text-foreground">Heritage</h3>
+                    <p className="text-sm text-muted-foreground">Traditional Legal Wisdom</p>
+                  </div>
+                </div>
+                <p className="text-muted-foreground text-sm leading-relaxed">
+                  Centuries of Indian legal precedents, constitutional foundations, and scholarly interpretations form the bedrock of our justice system.
+                </p>
+              </div>
+
+              {/* Center Instruction */}
+              <div className="pointer-events-auto text-center">
+                <motion.div 
+                  className="bg-accent/20 backdrop-blur-sm rounded-full px-6 py-3 border border-accent/30"
+                  animate={{ opacity: [0.7, 1, 0.7] }}
+                  transition={{ duration: 2, repeat: Infinity }}
+                >
+                  <p className="text-accent font-medium text-sm">
+                    Move cursor to reveal the future
+                  </p>
+                </motion.div>
+              </div>
+
+              {/* Right Card */}
+              <div className="pointer-events-auto bg-card/90 backdrop-blur-md rounded-xl p-6 border border-border shadow-elevated max-w-md">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-12 h-12 rounded-lg bg-primary/20 flex items-center justify-center">
+                    <svg className="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                    </svg>
+                  </div>
+                  <div>
+                    <h3 className="font-serif text-lg font-semibold text-foreground">Future</h3>
+                    <p className="text-sm text-muted-foreground">AI-Powered Justice</p>
+                  </div>
+                </div>
+                <p className="text-muted-foreground text-sm leading-relaxed">
+                  Nyaya AI transforms complex legal knowledge into accessible, explainable insights powered by advanced artificial intelligence.
+                </p>
+              </div>
+            </motion.div>
+          </div>
+        </div>
+
+        {/* Decorative Elements */}
+        <div className="absolute top-20 right-8 w-24 h-24 border-t-2 border-r-2 border-accent/40 rounded-tr-2xl pointer-events-none" />
+        <div className="absolute bottom-8 left-8 w-24 h-24 border-b-2 border-l-2 border-accent/40 rounded-bl-2xl pointer-events-none" />
+      </div>
+
+      {/* Quote Section */}
+      <div className="bg-card border-t border-border py-12">
+        <div className="container mx-auto px-8 text-center">
+          <blockquote className="font-serif text-2xl md:text-3xl italic text-foreground max-w-3xl mx-auto">
+            "The law must be stable, but it must not stand still."
+          </blockquote>
+          <cite className="block mt-4 text-muted-foreground font-sans">
+            — Roscoe Pound
+          </cite>
+          <p className="mt-6 text-sm text-muted-foreground max-w-xl mx-auto">
+            At Nyaya AI, we honor the timeless principles of Indian law while embracing the transformative power of artificial intelligence to make justice accessible to all.
+          </p>
+        </div>
+      </div>
     </div>
   );
 };
