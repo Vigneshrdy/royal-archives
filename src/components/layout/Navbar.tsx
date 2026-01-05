@@ -14,6 +14,7 @@ const Navbar = () => {
     { href: "/team", label: "Team" },
     { href: "/showcase", label: "Showcase" },
     { href: "/helmet", label: "3D Helmet" },
+    { href: "/ghibli", label: "Ghibli Castle" },
     { href: "/chat", label: "Ask Nyaya" },
   ];
 

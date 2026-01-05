@@ -11,6 +11,7 @@ import Auth from "./pages/Auth";
 import Team from "./pages/Team";
 import CardShowcase from "./pages/CardShowcase";
 import HelmetReveal from "./pages/HelmetReveal";
+import GhibliCastle from "./pages/GhibliCastle";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -30,6 +31,7 @@ const App = () => (
           <Route path="/team" element={<Team />} />
           <Route path="/showcase" element={<CardShowcase />} />
           <Route path="/helmet" element={<HelmetReveal />} />
+          <Route path="/ghibli" element={<GhibliCastle />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
